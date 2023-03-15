@@ -608,11 +608,8 @@ var Preloader = /*#__PURE__*/function (_Phaser$Scene) {
     key: "preload",
     value: function preload() {
       // Preload all required assets.
-      this.load.image('phone', 'assets/Sprites/mobilephone.png');
       this.load.image('greenbutton', 'assets/Sprites/green-button.png');
       this.load.image('bluebutton', 'assets/Sprites/blue-button.png');
-      this.load.image('car', 'assets/Sprites/car.png');
-      this.load.image('relaynode', 'assets/Sprites/relay.png');
       this.load.image('redbutton', 'assets/Sprites/red-button.png');
       this.load.atlas('basestation', 'assets/Sprites/basestation.png', 'assets/Sprites/basestation.json', null, Phaser.Loader.TEXTURE_ATLAS_JSON_HASH);
       this.load.atlas("mm_laptop", "assets/mainmenu/laptop_atlas.png", "assets/mainmenu/laptop_atlas.json", null, Phaser.Loader.TEXTURE_ATLAS_JSON_HASH);
@@ -621,19 +618,24 @@ var Preloader = /*#__PURE__*/function (_Phaser$Scene) {
       this.load.atlas("mm_tablet", "assets/mainmenu/tablet_atlas.png", "assets/mainmenu/tablet_atlas.json", null, Phaser.Loader.TEXTURE_ATLAS_JSON_HASH);
       this.load.image("mm_wifi", "assets/mainmenu/wifi.png");
       this.load.atlas("mm_modem", "assets/mainmenu/modem_atlas.png", "assets/mainmenu/modem_atlas.json", null, Phaser.Loader.TEXTURE_ATLAS_JSON_HASH);
-      this.load.image("pausebutton", "assets/Sprites/pause-button.png");
+      this.load.image("pausebutton", "assets/Hand-Drawn/square_button_pause.png");
       this.load.image("pencil", "assets/mainmenu/pencil.png");
       this.load.script('webfont', 'https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js');
 
       //New handdrawn assets
       this.load.image('hd_phone', 'assets/Hand-Drawn/phone.png');
       this.load.image('hd_laptop', 'assets/Hand-Drawn/laptop.png');
+      this.load.image('hd_tablet', 'assets/Hand-Drawn/tablet.png');
       this.load.image('hd_car', 'assets/Hand-Drawn/car.png');
       this.load.image('hd_baseStation', 'assets/Hand-Drawn/base_station_empty.png');
       this.load.image('hd_envelope', 'assets/Hand-Drawn/envelope.png');
-      this.load.image('hd_relayStation', 'assets/Hand-Drawn/relay_station_empty');
+      this.load.image('hd_relayStation', 'assets/Hand-Drawn/relay_station_empty.png');
+      this.load.image('pencil_cursor', 'assets/Hand-Drawn/cursor_black.png');
+      this.load.image('paper_bg', "assets/paper_background.png");
       this.load.atlas('device_bars', 'assets/Hand-Drawn/device_bars.png', 'assets/Hand-Drawn/device_bars.json', null, Phaser.Loader.TEXTURE_ATLAS_JSON_HASH);
       this.load.atlas('relay_bands', 'assets/Hand-Drawn/relay_bands.png', 'assets/Hand-Drawn/relay_bands.json', null, Phaser.Loader.TEXTURE_ATLAS_JSON_HASH);
+      this.load.atlas('shapes', 'assets/Hand-Drawn/shapes.png', 'assets/Hand-Drawn/shapes.json', null, Phaser.Loader.TEXTURE_ATLAS_JSON_HASH);
+      this.load.atlas('timer', 'assets/Hand-Drawn/timer.png', 'assets/Hand-Drawn/timer.json', null, Phaser.Loader.TEXTURE_ATLAS_JSON_HASH);
     }
   }, {
     key: "create",
@@ -670,11 +672,11 @@ exports.default = void 0;
 var _eventDispatcher = _interopRequireDefault(require("./eventDispatcher.js"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
 function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
 function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
@@ -690,12 +692,55 @@ var baseEquipment = /*#__PURE__*/function (_Phaser$GameObjects$C) {
     _classCallCheck(this, baseEquipment);
     _this = _super.call(this, scene, x, y);
     scene.add.existing(_assertThisInitialized(_this));
-    _this.mainSprite = scene.add.sprite(0, 0, key);
+    _this.mainSprite = scene.add.sprite(10, 0, key);
     _this.graphics = scene.add.graphics();
     _this.add([_this.mainSprite, _this.graphics]);
+    _this.frequency = 0xec1c24; //Frequency for communication, default to red
+    _this.freqType = 'red'; //This makes navigating atlas related to frequency easier:)
+    scene.input.on('pointermove', _this.drawLineToPointer, _assertThisInitialized(_this));
+    _this.hover = false; //Is mouse hovering, might not be needed to initalise
+
+    _this.toggled = false; //This is how we tell if this BS is selected
+    _this.mainSprite.on('pointerover', function () {
+      _this.hover = true;
+    });
+    _this.mainSprite.on('pointerout', function () {
+      _this.hover = false;
+    });
     return _this;
   }
-  return _createClass(baseEquipment);
+  _createClass(baseEquipment, [{
+    key: "drawLineToPointer",
+    value: function drawLineToPointer() {
+      this.graphics.clear();
+      this.cursorLocation = this.scene.cameras.main.getWorldPoint(this.scene.input.activePointer.x, this.scene.input.activePointer.y);
+      var zoom = this.scene.cameras.main.zoom;
+      this.worldPoint = {
+        x: this.cursorLocation.x - this.x,
+        y: this.cursorLocation.y - this.y
+      };
+      if (this.toggled && this.rangeCircle.contains(this.worldPoint.x, this.worldPoint.y)) {
+        this.graphics.lineStyle(5, this.frequency, 1.0);
+        this.graphics.beginPath();
+        var headCoords = this.getLocalPoint(this.x + 16, this.y - 50);
+        this.graphics.moveTo(headCoords.x, headCoords.y);
+        this.graphics.lineTo(this.worldPoint.x, this.worldPoint.y);
+        this.graphics.closePath();
+        this.graphics.strokePath();
+      }
+    }
+  }, {
+    key: "update",
+    value: function update() {
+      if (this.toggled) {
+        this.graphics.lineStyle(2, 0xCCCCCC);
+        this.graphics.strokeCircle(0, 0, this.range);
+      } else {
+        this.graphics.clear();
+      }
+    }
+  }]);
+  return baseEquipment;
 }(Phaser.GameObjects.Container);
 exports.default = baseEquipment;
 },{"./eventDispatcher.js":"src/entities/eventDispatcher.js"}],"src/entities/baseStation.js":[function(require,module,exports) {
@@ -714,6 +759,8 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
 function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
 function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
+function _get() { if (typeof Reflect !== "undefined" && Reflect.get) { _get = Reflect.get.bind(); } else { _get = function _get(target, property, receiver) { var base = _superPropBase(target, property); if (!base) return; var desc = Object.getOwnPropertyDescriptor(base, property); if (desc.get) { return desc.get.call(arguments.length < 3 ? target : receiver); } return desc.value; }; } return _get.apply(this, arguments); }
+function _superPropBase(object, property) { while (!Object.prototype.hasOwnProperty.call(object, property)) { object = _getPrototypeOf(object); if (object === null) break; } return object; }
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
@@ -730,8 +777,9 @@ var baseStation = /*#__PURE__*/function (_baseEquipment) {
     _this = _super.call(this, scene, x, y, 'hd_baseStation');
     _this.mainSprite.setScale(0.3);
     _this.setSize(_this.mainSprite.displayWidth, _this.mainSprite.displayHeight);
-    _this.setInteractive();
     _this.mainSprite.setInteractive();
+    _this.range = 600;
+    _this.rangeCircle = new Phaser.Geom.Circle(0, 0, _this.range);
     //Base Station Listeners for Frequency Channels
     _eventDispatcher.default.on('new_frequency', function (freqInfo) {
       _this.frequency = freqInfo.f;
@@ -742,6 +790,17 @@ var baseStation = /*#__PURE__*/function (_baseEquipment) {
         _this.channelsInUse.push(bsInfo.f);
       }
     });
+    _eventDispatcher.default.on('relay_to_bs', function (relayInfo) {
+      if (relayInfo.x === _this.x + 12 && relayInfo.y === _this.y - 50) {
+        if (_this.channelsInUse.includes(_this.f)) {
+          _this.channelsInUse = _this.channelsInUse.filter(function (item) {
+            return item !== bsInfo.f;
+          });
+        } else {
+          _this.channelsInUse.push(relayInfo.f);
+        }
+      }
+    });
     _eventDispatcher.default.on('user_finished', function (bsInfo) {
       if (bsInfo.x === _this.x + 12 && bsInfo.y === _this.y - 50) {
         _this.channelsInUse = _this.channelsInUse.filter(function (item) {
@@ -750,19 +809,7 @@ var baseStation = /*#__PURE__*/function (_baseEquipment) {
       }
     });
     _this.channelsInUse = [];
-    _this.frequency = 0xec1c24; //Frequency for communication, default to red
-    _this.freqType = 'red'; //This makes navigating atlas related to frequency easier:)
-    _this.hover = false; //Is mouse hovering, might not be needed to initalise
-
-    _this.toggled = false; //This is how we tell if this BS is selected
-    _this.mainSprite.on('pointerover', function () {
-      _this.hover = true;
-    });
-    _this.mainSprite.on('pointerout', function () {
-      _this.hover = false;
-    });
     scene.input.on('pointerdown', _this.mouseClick, _assertThisInitialized(_this));
-    scene.input.on('pointermove', _this.drawLineToPointer, _assertThisInitialized(_this));
     return _this;
   }
   _createClass(baseStation, [{
@@ -779,23 +826,18 @@ var baseStation = /*#__PURE__*/function (_baseEquipment) {
       } else {
         this.graphics.clear();
         this.toggled = false;
-        _eventDispatcher.default.emit('bs_unselected');
+        _eventDispatcher.default.emit('bs_unselected', {
+          x: this.x + 12,
+          y: this.y - 50,
+          f: this.frequency,
+          t: this.freqType
+        });
       }
     }
   }, {
-    key: "drawLineToPointer",
-    value: function drawLineToPointer() {
-      this.graphics.clear();
-      if (this.toggled) {
-        this.graphics.lineStyle(5, this.frequency, 1.0);
-        this.worldPoint = this.scene.cameras.main.getWorldPoint(this.scene.input.activePointer.x, this.scene.input.activePointer.y);
-        this.graphics.beginPath();
-        var headCoords = this.getLocalPoint(this.x + 12, this.y - 50);
-        this.graphics.moveTo(headCoords.x, headCoords.y);
-        this.graphics.lineTo(this.worldPoint.x - this.x, this.worldPoint.y - this.y);
-        this.graphics.closePath();
-        this.graphics.strokePath();
-      }
+    key: "update",
+    value: function update() {
+      _get(_getPrototypeOf(baseStation.prototype), "update", this).call(this);
     }
   }]);
   return baseStation;
@@ -845,8 +887,11 @@ var userEquipment = /*#__PURE__*/function (_Phaser$GameObjects$C) {
       fill: '#fff'
     });
     _this.tLine = new Phaser.Curves.Line([0, 0, 0, 0]);
-    _this.envelopeGroup = scene.add.container(0, 0); //Idk why this needed to be a container
+    _this.envelopeGroup = scene.add.container(0, 0).setVisible(false); //Idk why this needed to be a container
     _this.add([_this.mainSprite, _this.graphics, _this.userText, _this.connectionIndictator, _this.envelopeGroup]);
+    _this.cameraZoom = scene.cameras.main.zoom;
+    console.log(_this.cameraZoom);
+    //this.setRotation(Phaser.Math.RND.between(-15,15))
 
     //Unique Properties
     _this.bars = 3;
@@ -862,6 +907,7 @@ var userEquipment = /*#__PURE__*/function (_Phaser$GameObjects$C) {
     _this.on('pointerdown', _this.handlePointerDown, _assertThisInitialized(_this));
     //Base station selected
     _eventDispatcher.default.on('bs_selected', function (eventData) {
+      if (_this.begun) return;
       _this.bs_target = true;
       if (!_this.tethered) {
         _this.frequency = eventData.f;
@@ -908,6 +954,7 @@ var userEquipment = /*#__PURE__*/function (_Phaser$GameObjects$C) {
           f: this.frequency
         });
         this.connectionIndictator.setFrame(this.freqType + '_' + this.bars);
+        this.envelopeGroup.setVisible(true);
         this.disableInteractive();
       }
     }
@@ -945,6 +992,7 @@ var userEquipment = /*#__PURE__*/function (_Phaser$GameObjects$C) {
     key: "handleEnvelope",
     value: function handleEnvelope() {
       _eventDispatcher.default.emit('add_score', 1);
+      this.envelopeGroup.list[this.successCount].setVisible(false);
       this.successCount += 1;
       //this.envCount -= 1; // Decrements envelopes by 1 for each successful data packet
       this.userText.setText(Phaser.Math.CeilTo(Phaser.Math.Percent(this.successCount, 0, this.envCount) * 100) + '%'); // Update the packetCount
@@ -957,13 +1005,12 @@ var userEquipment = /*#__PURE__*/function (_Phaser$GameObjects$C) {
     value: function boxAnim() {
       this.begun = true;
       this.graphics.lineStyle(5, this.frequency, 1); //Red Line for Red Freq.
-      this.graphics.fillStyle(0xfffffff, 1); //Envelopes
       this.tLine.draw(this.graphics);
       this.boxMove.play();
       for (var i = 0; i < this.paths.length; i++) {
         this.tLine.getPoint(this.paths[i].t, this.paths[i].vec);
         var worldPoint = this.scene.cameras.main.getWorldPoint(this.paths[i].vec.x, this.paths[i].vec.y);
-        this.envelopeGroup.list[i].setPosition(worldPoint.x, worldPoint.y);
+        this.envelopeGroup.list[i].setPosition(worldPoint.x * this.cameraZoom, worldPoint.y * this.cameraZoom);
         //this.graphics.fillRect(this.paths[i].vec.x - 8, this.paths[i].vec.y - 8, 16, 16);
       }
     }
@@ -1127,15 +1174,12 @@ var Phone = /*#__PURE__*/function (_userEquipment) {
     _this.connectionIndictator.setPosition(40, -50);
     _this.setSize(_this.mainSprite.displayWidth, _this.mainSprite.displayHeight);
     _this.setInteractive();
-    _this.envCount = Phaser.Math.RND.between(5, 10);
+    _this.timerSprite = scene.add.sprite(-30, 30, 'timer', 'timer_1').setScale(0.2);
+    _this.envCount = Phaser.Math.RND.between(10, 25);
     _this.progressPerc = 100 / _this.envCount;
     // [this.boxMove, this.paths] = this.newBoxAnim(scene,this.handleEnvelope,this.successHandler);
     _this.countdown = maxTime;
-    _this.alertText = scene.add.text(25, -40, '!', {
-      font: '24px Arial',
-      fill: '#FFFF00'
-    });
-    _this.add(_this.alertText);
+    _this.add(_this.timerSprite);
     _this.countEvent = scene.time.addEvent({
       delay: 1000,
       callback: function callback() {
@@ -1151,24 +1195,166 @@ var Phone = /*#__PURE__*/function (_userEquipment) {
     key: "countdownUpdate",
     value: function countdownUpdate(maxTime) {
       if (!this.tethered) {
-        this.alertText.setVisible(true);
+        this.timerSprite.setVisible(true);
         this.countdown -= 1;
         if (this.countdown < maxTime / 4) {
-          this.alertText.setText('!!!');
-          this.alertText.setColor('#FF0000');
+          this.timerSprite.setFrame('timer_3');
         } else if (this.countdown < maxTime / 2) {
-          this.alertText.setText('!!');
-          this.alertText.setColor('#FFA500');
+          this.timerSprite.setFrame('timer_2');
         }
         if (this.countdown < 0) _eventDispatcher.default.emit('gameover', this);
       } else {
-        this.alertText.setVisible(false);
+        this.timerSprite.setVisible(false);
       }
     }
   }]);
   return Phone;
 }(_userEquipment2.default);
 exports.default = Phone;
+},{"./eventDispatcher.js":"src/entities/eventDispatcher.js","./userEquipment.js":"src/entities/userEquipment.js"}],"src/entities/laptop.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _eventDispatcher = _interopRequireDefault(require("./eventDispatcher.js"));
+var _userEquipment2 = _interopRequireDefault(require("./userEquipment.js"));
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
+function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
+function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+var Laptop = /*#__PURE__*/function (_userEquipment) {
+  _inherits(Laptop, _userEquipment);
+  var _super = _createSuper(Laptop);
+  function Laptop(scene, x, y, scoreCallback) {
+    var _this;
+    var maxTime = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 32;
+    _classCallCheck(this, Laptop);
+    _this = _super.call(this, scene, x, y, 'hd_laptop', scoreCallback);
+    _this.mainSprite.setScale(0.3);
+    _this.connectionIndictator.setPosition(-50, 0);
+    _this.setSize(_this.mainSprite.displayWidth, _this.mainSprite.displayHeight);
+    _this.setInteractive();
+    _this.timerSprite = scene.add.sprite(5, -25, 'timer', 'timer_1').setScale(0.15);
+    _this.envCount = Phaser.Math.RND.between(10, 25);
+    _this.progressPerc = 100 / _this.envCount;
+    // [this.boxMove, this.paths] = this.newBoxAnim(scene,this.handleEnvelope,this.successHandler);
+    _this.countdown = maxTime;
+    _this.add(_this.timerSprite);
+    _this.countEvent = scene.time.addEvent({
+      delay: 1000,
+      callback: function callback() {
+        _this.countdownUpdate(maxTime);
+      },
+      callbackScope: _assertThisInitialized(_this),
+      loop: true
+    });
+    return _this;
+  }
+  //Todo: Add graphical indication for countdown
+  _createClass(Laptop, [{
+    key: "countdownUpdate",
+    value: function countdownUpdate(maxTime) {
+      if (!this.tethered) {
+        this.timerSprite.setVisible(true);
+        this.countdown -= 1;
+        if (this.countdown < maxTime / 4) {
+          this.timerSprite.setFrame('timer_3');
+        } else if (this.countdown < maxTime / 2) {
+          this.timerSprite.setFrame('timer_2');
+        }
+        if (this.countdown < 0) _eventDispatcher.default.emit('gameover', this);
+      } else {
+        this.timerSprite.setVisible(false);
+      }
+    }
+  }]);
+  return Laptop;
+}(_userEquipment2.default);
+exports.default = Laptop;
+},{"./eventDispatcher.js":"src/entities/eventDispatcher.js","./userEquipment.js":"src/entities/userEquipment.js"}],"src/entities/tablet.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _eventDispatcher = _interopRequireDefault(require("./eventDispatcher.js"));
+var _userEquipment2 = _interopRequireDefault(require("./userEquipment.js"));
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
+function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
+function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+var Tablet = /*#__PURE__*/function (_userEquipment) {
+  _inherits(Tablet, _userEquipment);
+  var _super = _createSuper(Tablet);
+  function Tablet(scene, x, y, scoreCallback) {
+    var _this;
+    var maxTime = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 16;
+    _classCallCheck(this, Tablet);
+    _this = _super.call(this, scene, x, y, 'hd_tablet', scoreCallback);
+    _this.mainSprite.setScale(0.2);
+    _this.connectionIndictator.setPosition(60, -30);
+    _this.setSize(_this.mainSprite.displayWidth, _this.mainSprite.displayHeight);
+    _this.setInteractive();
+    _this.timerSprite = scene.add.sprite(0, 0, 'timer', 'timer_1').setScale(0.2);
+    _this.envCount = Phaser.Math.RND.between(10, 25);
+    _this.progressPerc = 100 / _this.envCount;
+    // [this.boxMove, this.paths] = this.newBoxAnim(scene,this.handleEnvelope,this.successHandler);
+    _this.countdown = maxTime;
+    _this.add(_this.timerSprite);
+    _this.countEvent = scene.time.addEvent({
+      delay: 1000,
+      callback: function callback() {
+        _this.countdownUpdate(maxTime);
+      },
+      callbackScope: _assertThisInitialized(_this),
+      loop: true
+    });
+    return _this;
+  }
+  //Todo: Add graphical indication for countdown
+  _createClass(Tablet, [{
+    key: "countdownUpdate",
+    value: function countdownUpdate(maxTime) {
+      if (!this.tethered) {
+        this.timerSprite.setVisible(true);
+        this.countdown -= 1;
+        if (this.countdown < maxTime / 4) {
+          this.timerSprite.setFrame('timer_3');
+        } else if (this.countdown < maxTime / 2) {
+          this.timerSprite.setFrame('timer_2');
+        }
+        if (this.countdown < 0) _eventDispatcher.default.emit('gameover', this);
+      } else {
+        this.timerSprite.setVisible(false);
+      }
+    }
+  }]);
+  return Tablet;
+}(_userEquipment2.default);
+exports.default = Tablet;
 },{"./eventDispatcher.js":"src/entities/eventDispatcher.js","./userEquipment.js":"src/entities/userEquipment.js"}],"src/entities/relayBase.js":[function(require,module,exports) {
 "use strict";
 
@@ -1185,6 +1371,8 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
 function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
 function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
+function _get() { if (typeof Reflect !== "undefined" && Reflect.get) { _get = Reflect.get.bind(); } else { _get = function _get(target, property, receiver) { var base = _superPropBase(target, property); if (!base) return; var desc = Object.getOwnPropertyDescriptor(base, property); if (desc.get) { return desc.get.call(arguments.length < 3 ? target : receiver); } return desc.value; }; } return _get.apply(this, arguments); }
+function _superPropBase(object, property) { while (!Object.prototype.hasOwnProperty.call(object, property)) { object = _getPrototypeOf(object); if (object === null) break; } return object; }
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
@@ -1199,11 +1387,79 @@ var relayBase = /*#__PURE__*/function (_baseEquipment) {
     var _this;
     _classCallCheck(this, relayBase);
     _this = _super.call(this, scene, x, y, 'hd_relayStation');
+    //Always readjust your hit areas :)
     _this.mainSprite.setScale(0.5);
-    _this.tLine = new Phaser.Curves.Line([0, 0, 0, 0]);
+    _this.setSize(_this.mainSprite.displayWidth, _this.mainSprite.displayHeight);
+    _this.mainSprite.setInteractive();
+    _this.baseLine = new Phaser.Curves.Line([0, 0, 12, -50]);
+    _this.userLine = new Phaser.Curves.Line([0, 0, 0, 0]);
     _this.tethered = false;
     _this.bs_target = false;
-    _this.on('pointerdown', _this.handlePointerDown, _assertThisInitialized(_this));
+    _this.inUse = false;
+    _this.range = 300;
+    _this.rangeCircle = new Phaser.Geom.Circle(0, 0, _this.range);
+    _this.bsCoords = {
+      x: 0,
+      y: 0
+    };
+    _this.targetCoords = {
+      x: 0,
+      y: 0
+    };
+    _this.relayIcon = scene.add.sprite(12, -50, 'relay_bands', 'red').setScale(0.5);
+    _this.add(_this.relayIcon);
+    scene.input.on('pointerdown', _this.mouseClick, _assertThisInitialized(_this));
+    _eventDispatcher.default.on('bs_selected', function (eventData) {
+      //Catch clause
+      if (eventData.x == _this.x + 12) {
+        return;
+      }
+      _this.bs_target = !_this.bs_target;
+      console.log(_this.bs_target);
+      if (!_this.tethered) {
+        _this.frequency = eventData.f;
+        _this.freqType = eventData.t;
+      }
+      if (eventData.x == _this.bsCoords.x && eventData.y == _this.bsCoords.y) return; //No need to run this function if its the same Base Station.
+      //Except frequency, which could change.
+      _this.bsCoords = {
+        x: eventData.x,
+        y: eventData.y
+      };
+      var localCoords = _this.getLocalPoint(_this.bsCoords.x, _this.bsCoords.y);
+      _this.baseLine.p0.x = localCoords.x;
+      _this.baseLine.p0.y = localCoords.y;
+      _this.speed = Math.min(_this.baseLine.getLength() / 60, 8);
+      _this.duration = 3000 + Math.pow(2.71, _this.speed);
+
+      // [this.boxMove, this.paths] = this.newBoxAnim(this.scene,this.handleEnvelope,this.successHandler);
+    });
+
+    _eventDispatcher.default.on('user_started', function (bsInfo, user) {
+      if (bsInfo.x === _this.x + 12 && bsInfo.y === _this.y - 50) {
+        _eventDispatcher.default.emit('relay_to_bs', {
+          x: _this.bsCoords.x,
+          y: _this.bsCoords.y,
+          f: _this.frequency
+        });
+        _this.inUse = true;
+      }
+    });
+    _eventDispatcher.default.on('user_finished', function (bsInfo) {
+      if (bsInfo.x === _this.x + 12 && bsInfo.y === _this.y - 50) {
+        _eventDispatcher.default.emit('relay_to_bs', {
+          x: _this.bsCoords.x,
+          y: _this.bsCoords.y,
+          f: _this.frequency
+        });
+        _this.inUse = false;
+      }
+    });
+    _eventDispatcher.default.on('bs_unselected', function (bsInfo) {
+      if (bsInfo.x == _this.bsCoords.x && bsInfo.y == _this.bsCoords.y) {
+        //this.scene.time.delayedCall(1000, this.bs_target = false);
+      }
+    });
     return _this;
   }
 
@@ -1212,9 +1468,36 @@ var relayBase = /*#__PURE__*/function (_baseEquipment) {
   //-Ability to select a single user once connected to a base station
   //-Graphical indication of what frequency the relay is using. Colour of bulb?
   _createClass(relayBase, [{
-    key: "handlePointerDown",
-    value: function handlePointerDown() {
-      this.tethered = this.bs_target;
+    key: "mouseClick",
+    value: function mouseClick() {
+      console.log(this.bs_target);
+      if (!this.toggled & this.hover) {
+        this.tethered = this.bs_target;
+        if (this.tethered && !this.inUse) {
+          this.toggled = true;
+          _eventDispatcher.default.emit('bs_selected', {
+            x: this.x + 12,
+            y: this.y - 50,
+            f: this.frequency,
+            t: this.freqType
+          });
+        }
+      } else {
+        this.graphics.clear();
+        this.toggled = false;
+      }
+    }
+  }, {
+    key: "update",
+    value: function update() {
+      _get(_getPrototypeOf(relayBase.prototype), "update", this).call(this);
+      if (this.tethered) {
+        this.graphics.lineStyle(5, this.frequency, 1.0);
+        this.relayIcon.setFrame(this.freqType).setVisible(true);
+        this.baseLine.draw(this.graphics);
+      } else {
+        this.relayIcon.setVisible(false);
+      }
     }
   }]);
   return relayBase;
@@ -1231,6 +1514,8 @@ var _baseStation = _interopRequireDefault(require("../entities/baseStation.js"))
 var _eventDispatcher = _interopRequireDefault(require("../entities/eventDispatcher.js"));
 var _car = _interopRequireDefault(require("../entities/car.js"));
 var _phone = _interopRequireDefault(require("../entities/phone.js"));
+var _laptop = _interopRequireDefault(require("../entities/laptop.js"));
+var _tablet = _interopRequireDefault(require("../entities/tablet.js"));
 var _relayBase = _interopRequireDefault(require("../entities/relayBase.js"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
@@ -1272,8 +1557,15 @@ var Freeplay = /*#__PURE__*/function (_Phaser$Scene) {
     key: "create",
     value: function create() {
       var _this = this;
+      //Background magic
+      var background = this.add.group();
+      background.add(this.add.image(0, 0, 'paper_bg').setScale(0.5));
+      background.add(this.add.image(700, 0, 'paper_bg').setScale(0.5));
+      background.add(this.add.image(0, 500, 'paper_bg').setScale(0.5));
+      background.add(this.add.image(700, 500, 'paper_bg').setScale(0.5));
       //Camera Control
       this.fadePlugin = this.plugins.start('rexkawaseblurpipelineplugin');
+      this.input.setDefaultCursor('pencil_cursor, pointer');
       this.score = 0;
       this.score_threshold = 20;
       var cam = this.cameras.main;
@@ -1281,14 +1573,22 @@ var Freeplay = /*#__PURE__*/function (_Phaser$Scene) {
       var UIcam = this.cameras.add(0, 0, this.game.config.width, this.game.config.height).setName("UIcam");
       var pauseCam = this.cameras.add(0, 0, this.game.config.width, this.game.config.height).setName("pauseCam");
       _eventDispatcher.default.once('begin_camera', function () {
-        cam.zoomTo(0.5, 40000);
-        var visibleWidth = _this.game.config.width * 2 / cam.zoom;
-        var visibleHeight = _this.game.config.height * 2 / cam.zoom;
-        var offsetX = (visibleWidth - _this.game.config.width * 2) / 2;
-        var offsetY = (visibleHeight - _this.game.config.height * 2) / 2;
-        var bounds = new Phaser.Geom.Rectangle(offsetX, offsetY, visibleWidth, visibleHeight);
-        cam.setBounds(bounds.x, bounds.y, bounds.width, bounds.height);
+        cam.zoomTo(0.8, 1000);
+        /*
+        const visibleWidth = this.game.config.width*2 / cam.zoom;
+        const visibleHeight = this.game.config.height*2 / cam.zoom;
+        const offsetX = (visibleWidth - this.game.config.width*2) / 2;
+        const offsetY = (visibleHeight - this.game.config.height*2) / 2;
+        const bounds = new Phaser.Geom.Rectangle(
+        offsetX,
+        offsetY,
+        visibleWidth,
+        visibleHeight
+        );
+        cam.setBounds(bounds.x, bounds.y, bounds.width, bounds.height);*/
       });
+
+      this.cameras.main.on('zoom', this.updatePhysicsWorldBounds, this);
 
       //Gameobject Reactive
       this.input.on('gameobjectdown', function (pointer, gameObject) {
@@ -1325,24 +1625,28 @@ var Freeplay = /*#__PURE__*/function (_Phaser$Scene) {
         runChildUpdate: true
       });
       _eventDispatcher.default.on('userFinished', function (bsInfo) {
-        var carCoords = [25, 775];
+        var carCoords = [25, 775 / cam.zoom];
         _this.maxUsers = 1 + Phaser.Math.FloorTo(_this.score / _this.score_threshold);
         for (var i = 0; i < _this.maxUsers; i++) {
           var newUser = 0;
           if (_this.UE_group.countActive() > _this.maxUsers) break;
-          switch (Phaser.Math.RND.between(1, 2)) {
+          switch (Phaser.Math.RND.between(3, 4)) {
             //1 to Types of Devices
             case 1:
               //Default: Mobile Phone
-              newUser = new _phone.default(_this, Phaser.Math.RND.between(150, 750 / cam.zoom), Phaser.Math.RND.between(50, 500 / cam.zoom));
+              newUser = new _phone.default(_this, Phaser.Math.RND.between(150, 750 / cam.zoom), Phaser.Math.RND.between(50, 500 / cam.zoom)).setDepth(5);
               break;
             case 2:
               //Car Class, moves across screen but changes
-              newUser = new _car.default(_this, carCoords[Phaser.Math.RND.between(0, 1)], Phaser.Math.RND.between(100, 550));
+              newUser = new _car.default(_this, carCoords[Phaser.Math.RND.between(0, 1)], Phaser.Math.RND.between(100, 550 / cam.zoom)).setDepth(5);
               break;
             case 3:
               //Laptop?
-              //  newUser = new Car
+              newUser = new _laptop.default(_this, Phaser.Math.RND.between(150, 750 / cam.zoom), Phaser.Math.RND.between(50, 500 / cam.zoom)).setDepth(5);
+              break;
+            case 4:
+              //Tablet
+              newUser = new _tablet.default(_this, Phaser.Math.RND.between(150, 750 / cam.zoom), Phaser.Math.RND.between(50, 500 / cam.zoom)).setDepth(5);
               break;
           }
           _this.UE_group.add(newUser);
@@ -1356,9 +1660,11 @@ var Freeplay = /*#__PURE__*/function (_Phaser$Scene) {
         fontFamily: 'Gloria Hallelujah'
       });
       this.mainTower = new _baseStation.default(this, Phaser.Math.RND.between(50, 125), 100).setDepth(1);
-      var relayOne = new _relayBase.default(this, 450, 450);
-      this.add.existing(this.mainTower);
-      this.add.existing(relayOne);
+      var relayOne = new _relayBase.default(this, 450, 450).setDepth(1);
+      this.BS_group.add(this.mainTower);
+      this.BS_group.add(relayOne);
+      //this.add.existing(this.mainTower);
+      //this.add.existing(relayOne);
       _eventDispatcher.default.emit('userFinished');
       _eventDispatcher.default.on('gameover', function (failUE) {
         console.log(failUE); //Could show the user this?
@@ -1370,7 +1676,7 @@ var Freeplay = /*#__PURE__*/function (_Phaser$Scene) {
       }, this);
 
       //UI Buttons-------------------------------------------------------------------------------------
-      var pause_button = this.add.sprite(this.game.config.width - 25, 25, 'pausebutton').setInteractive().on('pointerdown', function () {
+      var pause_button = this.add.sprite(this.game.config.width - 50, 30, 'pausebutton').setInteractive().on('pointerdown', function () {
         _this.blur_cameras(cam, UIcam, 4);
         pause_button.setVisible(false);
         _this.scene.pause();
@@ -1412,8 +1718,8 @@ var Freeplay = /*#__PURE__*/function (_Phaser$Scene) {
         _eventDispatcher.default.removeAllListeners();
       }, this);
       cam.ignore([this.scoreText, red_button, green_button, blue_button, pause_button]);
-      UIcam.ignore([this.mainTower, this.mainTower.graphics, this.UE_group, relayOne, pause_button]);
-      pauseCam.ignore([this.scoreText, red_button, green_button, blue_button, this.mainTower, this.mainTower.graphics, this.UE_group, relayOne]);
+      UIcam.ignore([this.mainTower, this.mainTower.graphics, this.UE_group, relayOne, pause_button, background]);
+      pauseCam.ignore([this.scoreText, red_button, green_button, blue_button, this.mainTower, this.mainTower.graphics, this.UE_group, relayOne, background]);
     }
 
     //UPDATE FUNCTION
@@ -1432,11 +1738,19 @@ var Freeplay = /*#__PURE__*/function (_Phaser$Scene) {
         blur: b
       });
     }
+  }, {
+    key: "updatePhysicsWorldBounds",
+    value: function updatePhysicsWorldBounds() {
+      var zoomFactor = this.cameras.main.zoom;
+      var worldWidth = this.scale.width / zoomFactor;
+      var worldHeight = this.scale.height / zoomFactor;
+      this.physics.world.setBounds(0, 0, worldWidth, worldHeight);
+    }
   }]);
   return Freeplay;
 }(Phaser.Scene);
 exports.default = Freeplay;
-},{"../entities/baseStation.js":"src/entities/baseStation.js","../entities/eventDispatcher.js":"src/entities/eventDispatcher.js","../entities/car.js":"src/entities/car.js","../entities/phone.js":"src/entities/phone.js","../entities/relayBase.js":"src/entities/relayBase.js"}],"src/scenes/pause.js":[function(require,module,exports) {
+},{"../entities/baseStation.js":"src/entities/baseStation.js","../entities/eventDispatcher.js":"src/entities/eventDispatcher.js","../entities/car.js":"src/entities/car.js","../entities/phone.js":"src/entities/phone.js","../entities/laptop.js":"src/entities/laptop.js","../entities/tablet.js":"src/entities/tablet.js","../entities/relayBase.js":"src/entities/relayBase.js"}],"src/scenes/pause.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1479,7 +1793,7 @@ var Pause = /*#__PURE__*/function (_Phaser$Scene) {
         fontFamily: 'Gloria Hallelujah',
         fill: '#000'
       });
-      var pause_button = this.add.sprite(this.game.config.width - 25, 25, 'pausebutton').on('pointerdown', function () {
+      var pause_button = this.add.sprite(this.game.config.width - 50, 30, 'pausebutton').on('pointerdown', function () {
         _this.scene.resume("freeplayScene");
         _this.scene.stop();
       }).setScale(0.5);
@@ -2054,7 +2368,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "64579" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60998" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];
