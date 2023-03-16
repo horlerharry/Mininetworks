@@ -339,7 +339,7 @@ var Menu = /*#__PURE__*/function (_Phaser$Scene) {
 
       // Add level menu buttons.
 
-      var freeplay_button = this.add.text(90, 100, 'Freeplay', {
+      var freeplay_button = this.add.text(90, 150, 'Freeplay', {
         fontFamily: 'Gloria Hallelujah ',
         fontSize: '30px',
         fill: '#fff',
@@ -356,11 +356,11 @@ var Menu = /*#__PURE__*/function (_Phaser$Scene) {
         return _this.exitMenuAnimation('freeplayScene', 500, freeplay_button);
       }).on('pointerover', function () {
         _this.pencil.setVisible(true);
-        _this.pencil.setPosition(95, 95);
+        _this.pencil.setPosition(freeplay_button.x + 5, freeplay_button.y - 5);
       }).on('pointerout', function () {
         return _this.pencil.setVisible(false);
       });
-      var tutorial_button = this.add.text(90, 150, 'Tutorial', {
+      var tutorial_button = this.add.text(90, 100, 'Tutorial', {
         fontFamily: 'Gloria Hallelujah ',
         fontSize: '30px',
         fill: '#fff',
@@ -377,7 +377,7 @@ var Menu = /*#__PURE__*/function (_Phaser$Scene) {
         return _this.exitMenuAnimation('tutorialScene', 500, tutorial_button);
       }).on('pointerover', function () {
         _this.pencil.setVisible(true);
-        _this.pencil.setPosition(90, 145);
+        _this.pencil.setPosition(tutorial_button.x + 5, tutorial_button.y - 5);
       }).on('pointerout', function () {
         return _this.pencil.setVisible(false);
       });
@@ -398,7 +398,7 @@ var Menu = /*#__PURE__*/function (_Phaser$Scene) {
         return _this.exitMenuAnimation('theoryScene', 500, theory_button);
       }).on('pointerover', function () {
         _this.pencil.setVisible(true);
-        _this.pencil.setPosition(95, 195);
+        _this.pencil.setPosition(theory_button.x + 5, theory_button.y - 5);
       }).on('pointerout', function () {
         return _this.pencil.setVisible(false);
       });
@@ -771,13 +771,14 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
 var baseStation = /*#__PURE__*/function (_baseEquipment) {
   _inherits(baseStation, _baseEquipment);
   var _super = _createSuper(baseStation);
-  function baseStation(scene, x, y) {
+  function baseStation(scene, x, y, name) {
     var _this;
     _classCallCheck(this, baseStation);
     _this = _super.call(this, scene, x, y, 'hd_baseStation');
     _this.mainSprite.setScale(0.3);
     _this.setSize(_this.mainSprite.displayWidth, _this.mainSprite.displayHeight);
     _this.mainSprite.setInteractive();
+    _this.name = name;
     _this.range = 600;
     _this.rangeCircle = new Phaser.Geom.Circle(0, 0, _this.range);
     //Base Station Listeners for Frequency Channels
@@ -786,15 +787,15 @@ var baseStation = /*#__PURE__*/function (_baseEquipment) {
       _this.freqType = freqInfo.name;
     });
     _eventDispatcher.default.on('user_started', function (bsInfo) {
-      if (bsInfo.x === _this.x + 12 && bsInfo.y === _this.y - 50) {
+      if (_this.name === bsInfo.name) {
         _this.channelsInUse.push(bsInfo.f);
       }
     });
     _eventDispatcher.default.on('relay_to_bs', function (relayInfo) {
-      if (relayInfo.x === _this.x + 12 && relayInfo.y === _this.y - 50) {
-        if (_this.channelsInUse.includes(_this.f)) {
+      if (_this.name === relayInfo.name) {
+        if (_this.channelsInUse.includes(relayInfo.f)) {
           _this.channelsInUse = _this.channelsInUse.filter(function (item) {
-            return item !== bsInfo.f;
+            return item !== relayInfo.f;
           });
         } else {
           _this.channelsInUse.push(relayInfo.f);
@@ -802,7 +803,7 @@ var baseStation = /*#__PURE__*/function (_baseEquipment) {
       }
     });
     _eventDispatcher.default.on('user_finished', function (bsInfo) {
-      if (bsInfo.x === _this.x + 12 && bsInfo.y === _this.y - 50) {
+      if (_this.name === bsInfo.name) {
         _this.channelsInUse = _this.channelsInUse.filter(function (item) {
           return item !== bsInfo.f;
         });
@@ -817,20 +818,28 @@ var baseStation = /*#__PURE__*/function (_baseEquipment) {
     value: function mouseClick() {
       if (!this.toggled & this.hover) {
         this.toggled = true;
-        if (!this.channelsInUse.includes(this.frequency)) _eventDispatcher.default.emit('bs_selected', {
-          x: this.x + 12,
-          y: this.y - 50,
-          f: this.frequency,
-          t: this.freqType
-        });
+        if (!this.channelsInUse.includes(this.frequency)) {
+          _eventDispatcher.default.emit('bs_selected', {
+            x: this.x + 12,
+            y: this.y - 50,
+            f: this.frequency,
+            t: this.freqType,
+            name: this.name,
+            range: this.range
+          });
+          _eventDispatcher.default.emit('bstoRelay_selected', {
+            x: this.x + 12,
+            y: this.y - 50,
+            f: this.frequency,
+            t: this.freqType,
+            name: this.name
+          });
+        }
       } else {
         this.graphics.clear();
         this.toggled = false;
         _eventDispatcher.default.emit('bs_unselected', {
-          x: this.x + 12,
-          y: this.y - 50,
-          f: this.frequency,
-          t: this.freqType
+          name: this.name
         });
       }
     }
@@ -884,14 +893,15 @@ var userEquipment = /*#__PURE__*/function (_Phaser$GameObjects$C) {
     _this.connectionIndictator = scene.add.sprite(0, 0, 'device_bars', 'default').setScale(0.1);
     _this.userText = scene.add.text(0, 40, '0%', {
       fontSize: '16px',
-      fill: '#fff'
+      fill: '#000',
+      fontFamily: 'Gloria Hallelujah '
     });
     _this.tLine = new Phaser.Curves.Line([0, 0, 0, 0]);
     _this.envelopeGroup = scene.add.container(0, 0).setVisible(false); //Idk why this needed to be a container
     _this.add([_this.mainSprite, _this.graphics, _this.userText, _this.connectionIndictator, _this.envelopeGroup]);
     _this.cameraZoom = scene.cameras.main.zoom;
-    console.log(_this.cameraZoom);
     //this.setRotation(Phaser.Math.RND.between(-15,15))
+    _this.bsName = 'null';
 
     //Unique Properties
     _this.bars = 3;
@@ -909,12 +919,12 @@ var userEquipment = /*#__PURE__*/function (_Phaser$GameObjects$C) {
     _eventDispatcher.default.on('bs_selected', function (eventData) {
       if (_this.begun) return;
       _this.bs_target = true;
-      if (!_this.tethered) {
-        _this.frequency = eventData.f;
-        _this.freqType = eventData.t;
-      }
-      if (eventData.x == _this.bsCoords.x && eventData.y == _this.bsCoords.y) return; //No need to run this function if its the same Base Station.
+      _this.frequency = eventData.f;
+      _this.freqType = eventData.t;
+      if (eventData.name === _this.bsName) return; //No need to run this function if its the same Base Station.
       //Except frequency, which could change.
+      _this.bsName = eventData.name;
+      _this.bsRange = eventData.range;
       _this.bsCoords = {
         x: eventData.x,
         y: eventData.y
@@ -922,6 +932,7 @@ var userEquipment = /*#__PURE__*/function (_Phaser$GameObjects$C) {
       var localCoords = _this.getLocalPoint(_this.bsCoords.x, _this.bsCoords.y);
       _this.tLine.p0.x = localCoords.x;
       _this.tLine.p0.y = localCoords.y;
+      _this.distance = _this.tLine.getLength();
       _this.speed = Math.min(_this.tLine.getLength() / 60, 8);
       _this.duration = 3000 + Math.pow(2.71, _this.speed);
       if (_this.duration > 7000) {
@@ -931,15 +942,11 @@ var userEquipment = /*#__PURE__*/function (_Phaser$GameObjects$C) {
       } else {
         _this.bars = 3;
       }
-      var _this$newBoxAnim = _this.newBoxAnim(_this.scene, _this.handleEnvelope, _this.successHandler);
-      var _this$newBoxAnim2 = _slicedToArray(_this$newBoxAnim, 2);
-      _this.boxMove = _this$newBoxAnim2[0];
-      _this.paths = _this$newBoxAnim2[1];
     });
 
     //Base station unselected
-    _eventDispatcher.default.on('bs_unselected', function () {
-      _this.bs_target = false;
+    _eventDispatcher.default.on('bs_unselected', function (name) {
+      if (_this.bsName === name) _this.bs_target = false;
     });
     return _this;
   }
@@ -951,8 +958,13 @@ var userEquipment = /*#__PURE__*/function (_Phaser$GameObjects$C) {
         _eventDispatcher.default.emit('user_started', {
           x: this.bsCoords.x,
           y: this.bsCoords.y,
-          f: this.frequency
+          f: this.frequency,
+          name: this.bsName
         });
+        var _this$newBoxAnim = this.newBoxAnim(this.scene, this.handleEnvelope, this.successHandler);
+        var _this$newBoxAnim2 = _slicedToArray(_this$newBoxAnim, 2);
+        this.boxMove = _this$newBoxAnim2[0];
+        this.paths = _this$newBoxAnim2[1];
         this.connectionIndictator.setFrame(this.freqType + '_' + this.bars);
         this.envelopeGroup.setVisible(true);
         this.disableInteractive();
@@ -1041,9 +1053,8 @@ var userEquipment = /*#__PURE__*/function (_Phaser$GameObjects$C) {
       this.boxMove.stop();
       _eventDispatcher.default.emit('add_score', 5);
       _eventDispatcher.default.emit('user_finished', {
-        x: this.bsCoords.x,
-        y: this.bsCoords.y,
-        f: this.frequency
+        f: this.frequency,
+        name: this.bsName
       }); //This informs the Base Station that the user has finished.
       _eventDispatcher.default.emit('userFinished'); // This updates the scene to spawn new entities.
       this.cleanup();
@@ -1111,12 +1122,6 @@ var Car = /*#__PURE__*/function (_userEquipment) {
     return _this;
   }
   _createClass(Car, [{
-    key: "isSpriteCentreOutOfBounds",
-    value: function isSpriteCentreOutOfBounds() {
-      var bounds = this.scene.physics.world.bounds;
-      return !Phaser.Geom.Rectangle.ContainsPoint(bounds, new Phaser.Geom.Point(this.x, this.y));
-    }
-  }, {
     key: "update",
     value: function update() {
       _get(_getPrototypeOf(Car.prototype), "update", this).call(this);
@@ -1131,7 +1136,7 @@ var Car = /*#__PURE__*/function (_userEquipment) {
         x: conCoords.x,
         y: conCoords.y
       };
-      if (this.isSpriteCentreOutOfBounds()) {
+      if (this.x < 0 || this.x > this.scene.game.config.width / this.scene.cameras.main.zoom) {
         _eventDispatcher.default.emit('gameover', this);
       }
     }
@@ -1167,15 +1172,15 @@ var Phone = /*#__PURE__*/function (_userEquipment) {
   var _super = _createSuper(Phone);
   function Phone(scene, x, y, scoreCallback) {
     var _this;
-    var maxTime = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 20;
+    var maxTime = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 15;
     _classCallCheck(this, Phone);
     _this = _super.call(this, scene, x, y, 'hd_phone', scoreCallback);
     _this.mainSprite.setScale(0.3);
-    _this.connectionIndictator.setPosition(40, -50);
+    _this.connectionIndictator.setPosition(40, -40);
     _this.setSize(_this.mainSprite.displayWidth, _this.mainSprite.displayHeight);
     _this.setInteractive();
-    _this.timerSprite = scene.add.sprite(-30, 30, 'timer', 'timer_1').setScale(0.2);
-    _this.envCount = Phaser.Math.RND.between(10, 25);
+    _this.timerSprite = scene.add.sprite(-3, 0, 'timer', 'timer_1').setScale(0.2);
+    _this.envCount = Phaser.Math.RND.between(6, 12);
     _this.progressPerc = 100 / _this.envCount;
     // [this.boxMove, this.paths] = this.newBoxAnim(scene,this.handleEnvelope,this.successHandler);
     _this.countdown = maxTime;
@@ -1247,7 +1252,7 @@ var Laptop = /*#__PURE__*/function (_userEquipment) {
     _this.setSize(_this.mainSprite.displayWidth, _this.mainSprite.displayHeight);
     _this.setInteractive();
     _this.timerSprite = scene.add.sprite(5, -25, 'timer', 'timer_1').setScale(0.15);
-    _this.envCount = Phaser.Math.RND.between(10, 25);
+    _this.envCount = Phaser.Math.RND.between(15, 25);
     _this.progressPerc = 100 / _this.envCount;
     // [this.boxMove, this.paths] = this.newBoxAnim(scene,this.handleEnvelope,this.successHandler);
     _this.countdown = maxTime;
@@ -1311,7 +1316,7 @@ var Tablet = /*#__PURE__*/function (_userEquipment) {
   var _super = _createSuper(Tablet);
   function Tablet(scene, x, y, scoreCallback) {
     var _this;
-    var maxTime = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 16;
+    var maxTime = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 20;
     _classCallCheck(this, Tablet);
     _this = _super.call(this, scene, x, y, 'hd_tablet', scoreCallback);
     _this.mainSprite.setScale(0.2);
@@ -1319,7 +1324,7 @@ var Tablet = /*#__PURE__*/function (_userEquipment) {
     _this.setSize(_this.mainSprite.displayWidth, _this.mainSprite.displayHeight);
     _this.setInteractive();
     _this.timerSprite = scene.add.sprite(0, 0, 'timer', 'timer_1').setScale(0.2);
-    _this.envCount = Phaser.Math.RND.between(10, 25);
+    _this.envCount = Phaser.Math.RND.between(10, 15);
     _this.progressPerc = 100 / _this.envCount;
     // [this.boxMove, this.paths] = this.newBoxAnim(scene,this.handleEnvelope,this.successHandler);
     _this.countdown = maxTime;
@@ -1383,7 +1388,7 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
 var relayBase = /*#__PURE__*/function (_baseEquipment) {
   _inherits(relayBase, _baseEquipment);
   var _super = _createSuper(relayBase);
-  function relayBase(scene, x, y) {
+  function relayBase(scene, x, y, name) {
     var _this;
     _classCallCheck(this, relayBase);
     _this = _super.call(this, scene, x, y, 'hd_relayStation');
@@ -1391,17 +1396,20 @@ var relayBase = /*#__PURE__*/function (_baseEquipment) {
     _this.mainSprite.setScale(0.5);
     _this.setSize(_this.mainSprite.displayWidth, _this.mainSprite.displayHeight);
     _this.mainSprite.setInteractive();
+    //this.setInteractive();
     _this.baseLine = new Phaser.Curves.Line([0, 0, 12, -50]);
     _this.userLine = new Phaser.Curves.Line([0, 0, 0, 0]);
     _this.tethered = false;
     _this.bs_target = false;
     _this.inUse = false;
     _this.range = 300;
+    _this.name = name;
     _this.rangeCircle = new Phaser.Geom.Circle(0, 0, _this.range);
     _this.bsCoords = {
       x: 0,
       y: 0
     };
+    _this.bsName = 'null';
     _this.targetCoords = {
       x: 0,
       y: 0
@@ -1409,24 +1417,24 @@ var relayBase = /*#__PURE__*/function (_baseEquipment) {
     _this.relayIcon = scene.add.sprite(12, -50, 'relay_bands', 'red').setScale(0.5);
     _this.add(_this.relayIcon);
     scene.input.on('pointerdown', _this.mouseClick, _assertThisInitialized(_this));
-    _eventDispatcher.default.on('bs_selected', function (eventData) {
+    scene.input.setDraggable(_this.mainSprite);
+    _eventDispatcher.default.on('bstoRelay_selected', function (eventData) {
       //Catch clause
-      if (eventData.x == _this.x + 12) {
-        return;
-      }
+
       _this.bs_target = !_this.bs_target;
-      console.log(_this.bs_target);
       if (!_this.tethered) {
         _this.frequency = eventData.f;
         _this.freqType = eventData.t;
       }
       if (eventData.x == _this.bsCoords.x && eventData.y == _this.bsCoords.y) return; //No need to run this function if its the same Base Station.
       //Except frequency, which could change.
+      _this.bsName = eventData.name;
       _this.bsCoords = {
         x: eventData.x,
         y: eventData.y
       };
       var localCoords = _this.getLocalPoint(_this.bsCoords.x, _this.bsCoords.y);
+      _this.mainSprite.input.draggable = false;
       _this.baseLine.p0.x = localCoords.x;
       _this.baseLine.p0.y = localCoords.y;
       _this.speed = Math.min(_this.baseLine.getLength() / 60, 8);
@@ -1436,30 +1444,47 @@ var relayBase = /*#__PURE__*/function (_baseEquipment) {
     });
 
     _eventDispatcher.default.on('user_started', function (bsInfo, user) {
-      if (bsInfo.x === _this.x + 12 && bsInfo.y === _this.y - 50) {
+      if (bsInfo.name === _this.name) {
         _eventDispatcher.default.emit('relay_to_bs', {
-          x: _this.bsCoords.x,
-          y: _this.bsCoords.y,
-          f: _this.frequency
+          f: _this.frequency,
+          name: _this.bsName
         });
+        console.log('start');
         _this.inUse = true;
+        _this.mainSprite.input.draggable = false;
+        _this.toggled = false;
+      } else {
+        _this.bs_target = false;
       }
     });
     _eventDispatcher.default.on('user_finished', function (bsInfo) {
-      if (bsInfo.x === _this.x + 12 && bsInfo.y === _this.y - 50) {
+      if (bsInfo.name === _this.name) {
         _eventDispatcher.default.emit('relay_to_bs', {
-          x: _this.bsCoords.x,
-          y: _this.bsCoords.y,
-          f: _this.frequency
+          f: _this.frequency,
+          name: _this.bsName
         });
+        console.log('end');
         _this.inUse = false;
+        _this.mainSprite.input.draggable = true;
       }
     });
     _eventDispatcher.default.on('bs_unselected', function (bsInfo) {
-      if (bsInfo.x == _this.bsCoords.x && bsInfo.y == _this.bsCoords.y) {
-        //this.scene.time.delayedCall(1000, this.bs_target = false);
+      if (bsInfo.name === _this.bsName && !_this.inUse) {
+        _this.mainSprite.input.draggable = true;
       }
     });
+
+    //Draggable Relay :)
+
+    scene.input.on('drag', function (pointer, obj, dragX, dragY) {
+      var cursorLocation = this.scene.cameras.main.getWorldPoint(this.scene.input.activePointer.x, this.scene.input.activePointer.y);
+      obj.parentContainer.setPosition(cursorLocation.x, cursorLocation.y);
+    }, _assertThisInitialized(_this));
+    scene.input.on('dragend', function (pointer, obj) {
+      this.bsCoords = this.getLocalPoint(this.bsCoords.x, this.bsCoords.y);
+      this.baseLine.p0.x = this.bsCoords.x;
+      this.baseLine.p0.y = this.bsCoords.y;
+    }, _assertThisInitialized(_this));
     return _this;
   }
 
@@ -1470,21 +1495,26 @@ var relayBase = /*#__PURE__*/function (_baseEquipment) {
   _createClass(relayBase, [{
     key: "mouseClick",
     value: function mouseClick() {
-      console.log(this.bs_target);
-      if (!this.toggled & this.hover) {
-        this.tethered = this.bs_target;
-        if (this.tethered && !this.inUse) {
-          this.toggled = true;
-          _eventDispatcher.default.emit('bs_selected', {
-            x: this.x + 12,
-            y: this.y - 50,
-            f: this.frequency,
-            t: this.freqType
-          });
+      if (!this.inUse) {
+        if (!this.toggled & this.hover) {
+          this.tethered = this.bs_target;
+          if (this.tethered && !this.inUse) {
+            this.toggled = true;
+            console.log('beep');
+            _eventDispatcher.default.emit('bs_selected', {
+              x: this.x + 12,
+              y: this.y - 50,
+              f: this.frequency,
+              t: this.freqType,
+              name: this.name,
+              range: this.range
+            });
+          }
+        } else {
+          this.graphics.clear();
+          this.toggled = false;
+          _eventDispatcher.default.emit('bs_unselected', this.name);
         }
-      } else {
-        this.graphics.clear();
-        this.toggled = false;
       }
     }
   }, {
@@ -1492,6 +1522,7 @@ var relayBase = /*#__PURE__*/function (_baseEquipment) {
     value: function update() {
       _get(_getPrototypeOf(relayBase.prototype), "update", this).call(this);
       if (this.tethered) {
+        this.mainSprite.input.draggable = false;
         this.graphics.lineStyle(5, this.frequency, 1.0);
         this.relayIcon.setFrame(this.freqType).setVisible(true);
         this.baseLine.draw(this.graphics);
@@ -1630,7 +1661,7 @@ var Freeplay = /*#__PURE__*/function (_Phaser$Scene) {
         for (var i = 0; i < _this.maxUsers; i++) {
           var newUser = 0;
           if (_this.UE_group.countActive() > _this.maxUsers) break;
-          switch (Phaser.Math.RND.between(3, 4)) {
+          switch (Phaser.Math.RND.between(1, 4)) {
             //1 to Types of Devices
             case 1:
               //Default: Mobile Phone
@@ -1659,10 +1690,11 @@ var Freeplay = /*#__PURE__*/function (_Phaser$Scene) {
         fill: '#000',
         fontFamily: 'Gloria Hallelujah'
       });
-      this.mainTower = new _baseStation.default(this, Phaser.Math.RND.between(50, 125), 100).setDepth(1);
-      var relayOne = new _relayBase.default(this, 450, 450).setDepth(1);
-      this.BS_group.add(this.mainTower);
+      this.mainTower = new _baseStation.default(this, Phaser.Math.RND.between(50, 125), 100, 'bs_1').setDepth(1);
+      var relayOne = new _relayBase.default(this, 450, 450, 'relay_1').setDepth(1);
       this.BS_group.add(relayOne);
+      this.BS_group.add(this.mainTower);
+
       //this.add.existing(this.mainTower);
       //this.add.existing(relayOne);
       _eventDispatcher.default.emit('userFinished');
@@ -1942,6 +1974,9 @@ function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) ===
 function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+var RED_HEX = 0xec1c24;
+var BLUE_HEX = 0x3f48cc;
+var GREEN_HEX = 0x0ed145;
 var Tutorial = /*#__PURE__*/function (_Phaser$Scene) {
   _inherits(Tutorial, _Phaser$Scene);
   var _super = _createSuper(Tutorial);
@@ -1953,12 +1988,69 @@ var Tutorial = /*#__PURE__*/function (_Phaser$Scene) {
   }
   _createClass(Tutorial, [{
     key: "preload",
-    value: function preload() {}
+    value: function preload() {
+      this.cameras.main.fadeIn(1000, 0, 0, 0);
+    }
   }, {
     key: "create",
     value: function create() {
       var _this = this;
-      this.textBoxCount = 0;
+      //Background magic
+      var background = this.add.group();
+      background.add(this.add.image(0, 0, 'paper_bg').setScale(0.5));
+      background.add(this.add.image(700, 0, 'paper_bg').setScale(0.5));
+      background.add(this.add.image(0, 500, 'paper_bg').setScale(0.5));
+      background.add(this.add.image(700, 500, 'paper_bg').setScale(0.5));
+
+      //Gameobject Reactive
+      this.input.on('gameobjectdown', function (pointer, gameObject) {
+        if (typeof gameObject.mainSprite != "undefined") {
+          gameObject.scene.add.tween({
+            targets: gameObject.mainSprite,
+            scaleX: "*=0.8",
+            scaleY: "*=0.8",
+            duration: 120,
+            onComplete: function onComplete() {
+              gameObject.setInteractive();
+            },
+            yoyo: true
+          });
+          gameObject.disableInteractive();
+        } else {
+          gameObject.scene.add.tween({
+            targets: gameObject,
+            scaleX: "*=0.8",
+            scaleY: "*=0.8",
+            duration: 120,
+            onComplete: function onComplete() {
+              gameObject.setInteractive();
+            },
+            yoyo: true
+          });
+          gameObject.disableInteractive();
+        }
+      });
+      this.red_button = this.add.sprite(300, this.game.config.height - 50, 'redbutton').setInteractive().setDepth(1).setVisible(false).on('pointerdown', function () {
+        _eventDispatcher.default.emit('new_frequency', {
+          f: RED_HEX,
+          name: 'red'
+        });
+      });
+      this.green_button = this.add.sprite(400, this.game.config.height - 50, 'greenbutton').setInteractive().setDepth(1).setVisible(false).on('pointerdown', function () {
+        _eventDispatcher.default.emit('new_frequency', {
+          f: GREEN_HEX,
+          name: 'green'
+        });
+      });
+      this.blue_button = this.add.sprite(500, this.game.config.height - 50, 'bluebutton').setInteractive().setDepth(1).setVisible(false).on('pointerdown', function () {
+        _eventDispatcher.default.emit('new_frequency', {
+          f: BLUE_HEX,
+          name: 'blue'
+        });
+      });
+      this.progressCount = 0;
+      this.usersFinished = 0;
+      this.notFirst = true;
       this.allDevices = this.add.group({
         runChildUpdate: true
       });
@@ -1966,17 +2058,43 @@ var Tutorial = /*#__PURE__*/function (_Phaser$Scene) {
       this.txtScene = this.scene.get('textBoxScene');
       //Emitters
       _eventDispatcher.default.on('user_started', function () {
-        this.progress = true;
-        this.events.emit('Progress');
-        _eventDispatcher.default.off('user_started');
-      }, this);
+        if (_this.usersFinished == 0) {
+          _this.progress = true;
+          _this.events.emit('Progress');
+        } else if (_this.usersFinished == 1) {
+          _this.progress = true;
+          _this.events.emit('Progress');
+        }
+      });
+      _eventDispatcher.default.on('userFinished', function () {
+        _this.usersFinished += 1;
+        console.log(_this.usersFinished);
+        if (_this.usersFinished == 1) {
+          if (_this.progressCount < 6) _this.progressCount = 6;
+          _this.progress = true;
+          console.log(_this.progressCount);
+          _this.events.emit('Progress');
+        } else if (_this.usersFinished == 2) {
+          if (_this.progressCount < 8) _this.progressCount = 8;
+          _this.progress = true;
+          _this.events.emit('Progress');
+        } else if (_this.usersFinished == 3) {
+          if (_this.progressCount < 9) _this.progressCount = 9;
+          _this.progress = true;
+          _this.events.emit('Progress');
+        } else if (_this.usersFinished == 5) {
+          _this.progress = true;
+          _this.events.emit('Progress');
+        }
+      });
 
       //textBox.on('pointerdown', () => {textBox.setVisible(false);});
       this.events.on('Progress', function () {
-        switch (_this.textBoxCount) {
+        console.log(_this.progressCount, _this.progress);
+        switch (_this.progressCount) {
           case 1:
-            _this.mainTower = new _baseStation.default(_this, 400, 150).setScale(2);
-            _this.txtScene.handleTextBoxUpdate(_this.textBoxCount);
+            _this.mainTower = new _baseStation.default(_this, 400, 150, 'bs').setScale(2);
+            _this.txtScene.handleTextBoxUpdate(1);
             break;
           case 2:
             var tween = _this.tweens.add({
@@ -1992,11 +2110,12 @@ var Tutorial = /*#__PURE__*/function (_Phaser$Scene) {
               // -1: infinity
               scope: _this
             });
+            _this, _this.handleTextBoxFinished();
             break;
           case 3:
-            _this.phone_1 = new _phone.default(_this, 400, 150, _this.add_score, 10000).setScale(1);
+            _this.phone_1 = new _phone.default(_this, 400, 150, _this.add_score, 10000).setScale(2);
             _this.allDevices.add(_this.phone_1);
-            _this.txtScene.handleTextBoxUpdate(_this.textBoxCount);
+            _this.txtScene.handleTextBoxUpdate(2);
             break;
           case 4:
             var tween = _this.tweens.add({
@@ -2012,20 +2131,91 @@ var Tutorial = /*#__PURE__*/function (_Phaser$Scene) {
               // -1: infinity
               scope: _this
             });
-            textBox.start(text_4, 30);
+            _this.txtScene.handleTextBoxUpdate(3);
             _this.progress = false;
             break;
           case 5:
             if (_this.progress) {
-              textBox.start(text_5, 30);
+              //Waiting for player to connect BS to User
+              _this.txtScene.handleTextBoxUpdate(4);
               _this.progress = false;
             }
+            break;
           case 6:
             if (_this.progress) {
-              textBox.start(text_6);
-              _this.phone_2 = new _phone.default(_this, 700, 300, _this.add_score);
+              //Waiting for phone_1 to finish
+              _this.txtScene.handleTextBoxUpdate(5);
+              _this.phone_2 = new _phone.default(_this, 600, 300, _this.add_score, 10000).setDepth(5);
+              _this.allDevices.add(_this.phone_2);
               _this.progress = false;
             }
+            break;
+          case 7:
+            if (_this.progress) {
+              //Waiting for phone_2 to start
+              _this.txtScene.handleTextBoxUpdate(6);
+              _this.progress = false;
+            }
+            break;
+          case 8:
+            if (_this.progress) {
+              //Waiting for phone_2 to finish
+              _this.relay_1 = new _relayBase.default(_this, 400, 300, 'relay').setScale(2);
+              _this.allDevices.add(_this.relay_1);
+              _this.txtScene.handleTextBoxUpdate(7);
+              _this.progress = false;
+            }
+            break;
+          case 9:
+            var tween = _this.tweens.add({
+              targets: _this.relay_1,
+              y: '+=30',
+              // '+=100'
+              x: '-=30',
+              scale: 1,
+              ease: 'Linear',
+              // 'Cubic', 'Elastic', 'Bounce', 'Back'
+              duration: 500,
+              repeat: 0,
+              // -1: infinity
+              scope: _this
+            });
+            _this.txtScene.handleTextBoxUpdate(8);
+            _this.phone_3 = new _phone.default(_this, 600, 300, _this.add_score, 10000).setDepth(5);
+            _this.allDevices.add(_this.phone_3);
+            break;
+          case 10:
+            if (_this.progress) {
+              _this.txtScene.handleTextBoxUpdate(9);
+              _this.progress = false;
+            }
+            break;
+          case 11:
+            //Base Station UI Control
+            _this.txtScene.handleTextBoxUpdate(10);
+            _this.red_button.setVisible(true);
+            _this.green_button.setVisible(true);
+            _this.blue_button.setVisible(true);
+            break;
+          case 12:
+            _this.txtScene.handleTextBoxUpdate(11);
+            _this.phone_4 = new _phone.default(_this, 450, 120, _this.add_score, 10000).setDepth(5);
+            _this.phone_5 = new _phone.default(_this, 500, 200, _this.add_score, 10000).setDepth(5);
+            _this.allDevices.add(_this.phone_4);
+            _this.allDevices.add(_this.phone_5);
+            break;
+          case 13:
+            if (_this.progress) {
+              _this.txtScene.handleTextBoxUpdate(12);
+            }
+            break;
+          case 14:
+            _this.cameras.main.fadeOut(1000, 0, 0, 0);
+            _this.time.delayedCall(1000, function () {
+              _this.scene.start('menuScene');
+              _this.scene.stop('textBoxScene');
+            });
+            break;
         }
       });
       this.scene.run('textBoxScene');
@@ -2042,7 +2232,7 @@ var Tutorial = /*#__PURE__*/function (_Phaser$Scene) {
     key: "handleTextBoxFinished",
     value: function handleTextBoxFinished() {
       this.input.enabled = true;
-      this.textBoxCount += 1;
+      this.progressCount += 1;
       this.events.emit('Progress');
     }
   }]);
@@ -2130,13 +2320,19 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
 var COLOR_PRIMARY = 0x77b5d9;
 var COLOR_LIGHT = 0xd7eaf3;
 var COLOR_DARK = 0x14397d;
-var text_1 = "Hello! Welcome to the Tutorial of Mini Networks! This is a game about managing the many devices that rely on the wireless communications network we take for granted everyday.";
-var text_2 = 'This is a Base Station! It acts as a central coordination point for wireless devices to connect to.';
-var text_3 = 'This is a mobile phone, and is one of the many devices that require an internet connection.';
-var text_4 = 'In Mini Networks, your job is to act as coordinator for all these wireless devices. In this example, try left clicking on the Base Station and then again on the phone to connect the phone to the network.';
-var text_5 = 'Brilliant! The mobile phone will now be serviced, and the progress can be seen as a percentage. Each envelope is a visual representation of a data packet being sent from the Base Station to the User Equipment (A common term for these devices).';
-var text_6 = 'Nice! That is one happy phone user. That user was quite close to the base station, let us see what happens when they are much further away';
-var text_7 = 'As you can see, it takes a lot longer to service a user far away from the base station. This is due to the signal waveforms detoriating the further they must travel (In maths, this is usually expressed as the inverse square law).';
+var text_0 = "Hello! Welcome to the Tutorial of Mini Networks! This is a game about managing the many devices that rely on the wireless communications network we take for granted everyday.";
+var text_1 = 'This is a Base Station! It acts as a central coordination point for wireless devices to connect to.';
+var text_2 = 'This is a mobile phone, and is one of the many devices that require an internet connection.';
+var text_3 = 'In Mini Networks, your job is to act as coordinator for all these wireless devices. In this example, try left clicking on the Base Station and then again on the phone to connect the phone to the network.';
+var text_4 = 'Brilliant! The mobile phone will now be serviced, and the progress can be seen as a percentage. Each envelope is a visual representation of a data packet being sent from the Base Station to the User Equipment (A common term for devices).';
+var text_5 = 'Nice! That is one happy phone user. That user was quite close to the base station, let us see what happens when they are much further away.';
+var text_6 = 'As you can see, it takes a lot longer to service a user far away from the base station. This is due to the signal waveforms detoriating the further they must travel (In maths, this is usually expressed as the inverse square law).';
+var text_7 = 'One method to further the distance our signals travel is a relay node. Typically, signals will move through paths of relays to reach their destination.';
+var text_8 = 'This time, use the relay to speed up the transmission time and further the range. You can drag the relay node to set it up where you would like, and you can unbind a relay node from a base station by clicking on the base station then re-clicking the relay.';
+var text_9 = 'Good job! If you have ever owned a Wi-Fi booster, hopefully you see some similarities here. Unfortunately for you, there will be more than one device to handle...';
+var text_10 = 'A popular technique to send data to different users is to seperate their signals in the frequency domain, this means you can send out as many signals as you have frequency bands, for which you have 3 frequencies (colours) to choose from';
+var text_11 = 'Try supporting both phones at the same time, using two different frequency bands (This technique is called Frequency Domain Multiple Access).';
+var text_12 = 'Awesome! That is where the tutorial ends, but with the addition of more features this will be expanded. Good luck!';
 var textBox = /*#__PURE__*/function (_Phaser$Scene) {
   _inherits(textBox, _Phaser$Scene);
   var _super = _createSuper(textBox);
@@ -2165,7 +2361,7 @@ var textBox = /*#__PURE__*/function (_Phaser$Scene) {
         wrapWidth: 500,
         fixedWidth: 500,
         fixedHeight: 65
-      }).start(text_1, 30);
+      }).start(text_0, 30);
       _eventDispatcher.default.on('textBoxFinished', function () {
         _this.tutScene.handleTextBoxFinished();
       });
@@ -2178,9 +2374,41 @@ var textBox = /*#__PURE__*/function (_Phaser$Scene) {
       console.log(tbCount);
       switch (tbCount) {
         case 1:
-          this.mainTextBox.start(text_2, 30);
+          this.mainTextBox.start(text_1, 30);
+          break;
         case 2:
+          this.mainTextBox.start(text_2, 30);
+          break;
+        case 3:
           this.mainTextBox.start(text_3, 30);
+          break;
+        case 4:
+          this.mainTextBox.start(text_4, 30);
+          break;
+        case 5:
+          this.mainTextBox.start(text_5, 30);
+          break;
+        case 6:
+          this.mainTextBox.start(text_6, 30);
+          break;
+        case 7:
+          this.mainTextBox.start(text_7, 30);
+          break;
+        case 8:
+          this.mainTextBox.start(text_8, 30);
+          break;
+        case 9:
+          this.mainTextBox.start(text_9, 30);
+          break;
+        case 10:
+          this.mainTextBox.start(text_10, 30);
+          break;
+        case 11:
+          this.mainTextBox.start(text_11, 30);
+          break;
+        case 12:
+          this.mainTextBox.start(text_12, 30);
+          break;
       }
     }
   }]);
@@ -2218,14 +2446,16 @@ var createTextBox = function createTextBox(scene, x, y, config) {
       this.typeNextPage();
     }
   }, textBox).on('pageend', function () {
+    var _this2 = this;
     if (this.isLastPage) {
       this.once('pointerup', function () {
         _eventDispatcher.default.emit('textBoxFinished');
+        icon.y = _this2.y;
       });
     }
     var icon = this.getElement('action').setVisible(true);
     this.resetChildVisibleState(icon);
-    icon.y -= 30;
+    icon.y -= -30;
     var tween = scene.tweens.add({
       targets: icon,
       y: '+=30',
@@ -2368,7 +2598,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60998" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "62716" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];
