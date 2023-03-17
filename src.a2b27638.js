@@ -698,9 +698,6 @@ var Preloader = /*#__PURE__*/function (_Phaser$Scene) {
     key: "preload",
     value: function preload() {
       // Preload all required assets.
-      this.load.image('greenbutton', 'assets/Sprites/green-button.png');
-      this.load.image('bluebutton', 'assets/Sprites/blue-button.png');
-      this.load.image('redbutton', 'assets/Sprites/red-button.png');
       this.load.atlas("mm_laptop", "assets/mainmenu/laptop_atlas.png", "assets/mainmenu/laptop_atlas.json", null, Phaser.Loader.TEXTURE_ATLAS_JSON_HASH);
       this.load.atlas("mm_phone1", "assets/mainmenu/phone1_atlas.png", "assets/mainmenu/phone1_atlas.json", null, Phaser.Loader.TEXTURE_ATLAS_JSON_HASH);
       this.load.atlas("mm_phone2", "assets/mainmenu/phone2_atlas.png", "assets/mainmenu/phone2_atlas.json", null, Phaser.Loader.TEXTURE_ATLAS_JSON_HASH);
@@ -709,6 +706,7 @@ var Preloader = /*#__PURE__*/function (_Phaser$Scene) {
       this.load.atlas("mm_modem", "assets/mainmenu/modem_atlas.png", "assets/mainmenu/modem_atlas.json", null, Phaser.Loader.TEXTURE_ATLAS_JSON_HASH);
       this.load.image("pencil", "assets/mainmenu/pencil.png");
       this.load.script('webfont', 'https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js');
+      this.load.image('nextPage', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/assets/images/arrow-down-left.png');
 
       //New handdrawn assets
       this.load.image('hd_phone', 'assets/Hand-Drawn/phone.png');
@@ -725,6 +723,7 @@ var Preloader = /*#__PURE__*/function (_Phaser$Scene) {
       this.load.atlas('shapes', 'assets/Hand-Drawn/shapes.png', 'assets/Hand-Drawn/shapes.json', null, Phaser.Loader.TEXTURE_ATLAS_JSON_HASH);
       this.load.atlas('buttons', 'assets/Hand-Drawn/buttons.png', 'assets/Hand-Drawn/buttons.json', null, Phaser.Loader.TEXTURE_ATLAS_JSON_HASH);
       this.load.atlas('timer', 'assets/Hand-Drawn/timer.png', 'assets/Hand-Drawn/timer.json', null, Phaser.Loader.TEXTURE_ATLAS_JSON_HASH);
+      this.load.atlas('theory', 'assets/Theory/theory.png', 'assets/Theory/theory.json', null, Phaser.Loader.TEXTURE_ATLAS_JSON_HASH);
     }
   }, {
     key: "create",
@@ -1163,7 +1162,7 @@ var userEquipment = /*#__PURE__*/function (_Phaser$GameObjects$C) {
   }, {
     key: "handleEnvelope",
     value: function handleEnvelope() {
-      _eventDispatcher.default.emit('add_score', 1);
+      _eventDispatcher.default.emit('add_score', 2);
       this.envelopeGroup.list[this.successCount].setVisible(false);
       this.successCount += 1;
       //this.envCount -= 1; // Decrements envelopes by 1 for each successful data packet
@@ -1873,7 +1872,7 @@ var Freeplay = /*#__PURE__*/function (_Phaser$Scene) {
       }).setDepth(3);
       _eventDispatcher.default.on('userFinished', function (bsInfo) {
         var carCoords = [25, 775 / cam.zoom];
-        _this.maxUsers = 1; // + Phaser.Math.FloorTo(this.score/this.score_threshold);
+        _this.maxUsers = 1 + Phaser.Math.FloorTo(_this.score / _this.score_threshold);
         for (var i = 0; i < _this.maxUsers; i++) {
           var newUser = 0;
           if (_this.UE_group.countActive() > _this.maxUsers) break;
@@ -2091,7 +2090,7 @@ var Pause = /*#__PURE__*/function (_Phaser$Scene) {
         fontSize: '64px',
         fill: '#000',
         fontFamily: 'Gloria Hallelujah'
-      }).setInteractive();
+      });
       this.add.text(235, 330, 'Wish this trick worked in real life', {
         fontSize: '20px',
         fontFamily: 'Gloria Hallelujah',
@@ -2525,6 +2524,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = void 0;
+var _eventDispatcher = _interopRequireDefault(require("../entities/eventDispatcher"));
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
@@ -2538,7 +2539,12 @@ function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) ===
 function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-var Theory = /*#__PURE__*/function (_Phaser$Scene) {
+var COLOR_PRIMARY = 0x77b5d9;
+var COLOR_LIGHT = 0xd7eaf3;
+var COLOR_DARK = 0x14397d;
+var text_1 = 'Hello! Ideally I could show you all this within the game, but that ended up being quite ambitious :)';
+var text_2 = 'I want to take you on a quick journey to show you how where your text message goes from your phone to your friends.';
+var text_3 = /*#__PURE__*/function (_Phaser$Scene) {
   _inherits(Theory, _Phaser$Scene);
   var _super = _createSuper(Theory);
   function Theory() {
@@ -2552,28 +2558,168 @@ var Theory = /*#__PURE__*/function (_Phaser$Scene) {
     value: function init(data) {}
   }, {
     key: "preload",
-    value: function preload() {}
+    value: function preload() {
+      this.load.scenePlugin({
+        key: 'rexuiplugin',
+        url: 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js',
+        sceneKey: 'rexUI'
+      });
+    }
   }, {
     key: "create",
     value: function create() {
       var _this = this;
-      this.add.text(20, 20, 'This will have some theory about 5G, some of the challenges and some extended reading for those interested in some of the technologies hinted at.', {
-        font: 'Arial 30px',
-        fill: '#fff'
+      var main_image = this.add.image(0, 0, 'theory', 'Slide' + 1).setOrigin(0, 0);
+      this.mainTextBox = createTextBox(this, 100, 400, {
+        wrapWidth: 500,
+        fixedWidth: 500,
+        fixedHeight: 65
+      }).start(text_1, 30);
+      this.counter = 1;
+      var pause_button = this.add.sprite(this.game.config.width - 50, 30, 'shapes', 'pause_button').setScale(0.5).setInteractive().on('pointerdown', function () {
+        _this.scene.start("menuScene");
+        _this.scene.stop();
       });
-      this.add.text(600, 500, 'Back', {
-        font: 'Arial 30x',
-        fill: '#fff'
-      }).setInteractive().on('pointerup', function () {
-        return _this.scene.start('menuScene');
+      _eventDispatcher.default.on('textBoxFinished', function () {
+        _this.counter += 1;
+        _this.handleTextBoxUpdate(tbCount);
       });
+      this.events.once('shutdown', function () {
+        _eventDispatcher.default.removeAllListeners();
+      });
+    }
+  }, {
+    key: "handleTextBoxUpdate",
+    value: function handleTextBoxUpdate(tbCount) {
+      switch (tbCount) {
+        case 2:
+          this.mainTextBox.start(text_2, 30);
+          this.main_image.setFrame('Slide' + tbCount);
+          break;
+        case 3:
+          this.mainTextBox.start(text_3, 30);
+          this.main_image.setFrame('Slide' + tbCount);
+          break;
+        case 4:
+          this.mainTextBox.start(text_4, 30);
+          this.main_image.setFrame('Slide' + tbCount);
+          break;
+        case 5:
+          this.mainTextBox.start(text_5, 30);
+          this.main_image.setFrame('Slide' + tbCount);
+          break;
+        case 6:
+          this.mainTextBox.start(text_6, 30);
+          this.main_image.setFrame('Slide' + tbCount);
+          break;
+        case 7:
+          this.mainTextBox.start(text_7, 30);
+          this.main_image.setFrame('Slide' + tbCount);
+          break;
+        case 8:
+          this.mainTextBox.start(text_8, 30);
+          this.main_image.setFrame('Slide' + tbCount);
+          break;
+        case 9:
+          this.mainTextBox.start(text_9, 30);
+          break;
+        case 10:
+          this.mainTextBox.start(text_10, 30);
+          break;
+        case 11:
+          this.mainTextBox.start(text_11, 30);
+          break;
+        case 12:
+          this.mainTextBox.start(text_12, 30);
+          break;
+      }
     }
   }]);
   return Theory;
 }(Phaser.Scene);
+
+//Code from Rex Plugin (Textbox UI)
+var GetValue = Phaser.Utils.Objects.GetValue;
+var createTextBox = function createTextBox(scene, x, y, config) {
+  var wrapWidth = GetValue(config, 'wrapWidth', 0);
+  var fixedWidth = GetValue(config, 'fixedWidth', 0);
+  var fixedHeight = GetValue(config, 'fixedHeight', 0);
+  var textBox = scene.rexUI.add.textBox({
+    x: x,
+    y: y,
+    background: scene.rexUI.add.roundRectangle(0, 0, 2, 2, 20, COLOR_PRIMARY).setStrokeStyle(2, COLOR_LIGHT),
+    icon: scene.rexUI.add.roundRectangle(0, 0, 2, 2, 20, COLOR_DARK),
+    text: getBuiltInText(scene, wrapWidth, fixedWidth, fixedHeight),
+    //text: getBBcodeText(scene, wrapWidth, fixedWidth, fixedHeight),
+
+    action: scene.add.image(0, 0, 'nextPage').setTint(COLOR_LIGHT).setVisible(false),
+    space: {
+      left: 20,
+      right: 20,
+      top: 20,
+      bottom: 20,
+      icon: 10,
+      text: 10
+    }
+  }).setOrigin(0).layout();
+  textBox.setInteractive().on('pointerdown', function () {
+    var icon = this.getElement('action').setVisible(false);
+    this.resetChildVisibleState(icon);
+    if (this.isTyping) {
+      this.stop(true);
+    } else {
+      this.typeNextPage();
+    }
+  }, textBox).on('pageend', function () {
+    var _this2 = this;
+    if (this.isLastPage) {
+      this.once('pointerup', function () {
+        _eventDispatcher.default.emit('textBoxFinished');
+        icon.y = _this2.y;
+      });
+    }
+    var icon = this.getElement('action').setVisible(true);
+    this.resetChildVisibleState(icon);
+    icon.y -= -30;
+    var tween = scene.tweens.add({
+      targets: icon,
+      y: '+=30',
+      // '+=100'
+      ease: 'Bounce',
+      // 'Cubic', 'Elastic', 'Bounce', 'Back'
+      duration: 500,
+      repeat: 0,
+      // -1: infinity
+      yoyo: false
+    });
+  }, textBox);
+  return textBox;
+};
+var getBuiltInText = function getBuiltInText(scene, wrapWidth, fixedWidth, fixedHeight) {
+  return scene.add.text(0, 0, '', {
+    fontSize: '20px',
+    wordWrap: {
+      width: wrapWidth
+    },
+    fontFamily: 'Source Sans Pro',
+    maxLines: 3
+  }).setFixedSize(fixedWidth, fixedHeight);
+};
+var getBBcodeText = function getBBcodeText(scene, wrapWidth, fixedWidth, fixedHeight) {
+  return scene.rexUI.add.BBCodeText(0, 0, '', {
+    fixedWidth: fixedWidth,
+    fixedHeight: fixedHeight,
+    fontSize: '20px',
+    wrap: {
+      mode: 'word',
+      width: wrapWidth
+    },
+    maxLines: 3
+  });
+};
 var _default = Theory;
 exports.default = _default;
-},{}],"src/scenes/textbox.js":[function(require,module,exports) {
+},{"../entities/eventDispatcher":"src/entities/eventDispatcher.js"}],"src/scenes/textbox.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -2628,7 +2774,6 @@ var textBox = /*#__PURE__*/function (_Phaser$Scene) {
         url: 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js',
         sceneKey: 'rexUI'
       });
-      this.load.image('nextPage', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/assets/images/arrow-down-left.png');
     }
   }, {
     key: "create",
@@ -2877,7 +3022,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "65237" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52763" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];
