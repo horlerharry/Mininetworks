@@ -706,7 +706,6 @@ var Preloader = /*#__PURE__*/function (_Phaser$Scene) {
       this.load.atlas("mm_modem", "assets/mainmenu/modem_atlas.png", "assets/mainmenu/modem_atlas.json", null, Phaser.Loader.TEXTURE_ATLAS_JSON_HASH);
       this.load.image("pencil", "assets/mainmenu/pencil.png");
       this.load.script('webfont', 'https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js');
-      //this.load.image('nextPage', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/assets/images/arrow-down-left.png');
 
       //New handdrawn assets
       this.load.image('hd_phone', 'assets/Hand-Drawn/phone.png');
@@ -1759,14 +1758,14 @@ var Freeplay = /*#__PURE__*/function (_Phaser$Scene) {
     value: function init(difficulty) {
       this.cameras.main.fadeIn(1000, 0, 0, 0);
       if (difficulty == 'hard') {
-        this.score_threshold = 20;
+        this.score_threshold = 40;
         this.score_multiplier = 2;
       } else if (difficulty == 'medium') {
         this.score_threshold = 30;
         this.score_multiplier = 1;
       } else {
         //difficulty == easy
-        this.score_threshold = 35;
+        this.score_threshold = 40;
         this.score_multiplier = 1;
       }
     }
@@ -1812,7 +1811,7 @@ var Freeplay = /*#__PURE__*/function (_Phaser$Scene) {
       var pauseCam = this.cameras.add(0, 0, this.game.config.width, this.game.config.height).setName("pauseCam");
       _eventDispatcher.default.on('camera_update', function () {
         _this.newZoom -= 0.1;
-        cam.zoomTo(_this.newZoom, _this.zoomDuration, 'Linear', true, function (camera, progress) {
+        cam.zoomTo(_this.newZoom, 15000, 'Linear', true, function (camera, progress) {
           _this.UE_group.getChildren().forEach(function (child) {
             child.cameraZoom = camera.zoom;
           });
@@ -1880,7 +1879,7 @@ var Freeplay = /*#__PURE__*/function (_Phaser$Scene) {
             //1 to Types of Devices
             case 1:
               //Default: Mobile Phone
-              newUser = new _phone.default(_this, Phaser.Math.RND.between(150, 750 / cam.zoom), Phaser.Math.RND.between(50, 500 / cam.zoom)).setDepth(5);
+              newUser = new _phone.default(_this, Phaser.Math.RND.between(100, 750 / cam.zoom), Phaser.Math.RND.between(50, 500 / cam.zoom)).setDepth(5);
               break;
             case 2:
               //Car Class, moves across screen but changes
@@ -1888,11 +1887,11 @@ var Freeplay = /*#__PURE__*/function (_Phaser$Scene) {
               break;
             case 3:
               //Laptop?
-              newUser = new _laptop.default(_this, Phaser.Math.RND.between(150, 750 / cam.zoom), Phaser.Math.RND.between(50, 500 / cam.zoom)).setDepth(5);
+              newUser = new _laptop.default(_this, Phaser.Math.RND.between(100, 750 / cam.zoom), Phaser.Math.RND.between(50, 500 / cam.zoom)).setDepth(5);
               break;
             case 4:
               //Tablet
-              newUser = new _tablet.default(_this, Phaser.Math.RND.between(150, 750 / cam.zoom), Phaser.Math.RND.between(50, 500 / cam.zoom)).setDepth(5);
+              newUser = new _tablet.default(_this, Phaser.Math.RND.between(100, 750 / cam.zoom), Phaser.Math.RND.between(50, 500 / cam.zoom)).setDepth(5);
               break;
           }
           _this.UE_group.add(newUser);
@@ -1906,14 +1905,11 @@ var Freeplay = /*#__PURE__*/function (_Phaser$Scene) {
         fontFamily: 'Gloria Hallelujah'
       });
       //Add all towers
-      this.mainTower = new _baseStation.default(this, Phaser.Math.RND.between(300, 375), 300, 'bs_1').setDepth(1);
-      this.secondTower = new _baseStation.default(this, 1000, 1000, 'bs_2').setDepth(1);
-      var relayOne = new _relayBase.default(this, 450, 450, 'relay_1').setDepth(1);
-      console.log('boop');
-      this.RS_group.add(relayOne);
+      this.mainTower = new _baseStation.default(this, Phaser.Math.RND.between(300, 375), 300, 'bs_1').setDepth(6);
+      this.secondTower = new _baseStation.default(this, 900, 500, 'bs_2').setDepth(6);
+      this.thirdTower = new _baseStation.default(this, 550, 1000, 'bs_3').setDepth(6);
       this.BS_group.add(this.mainTower);
       this.BS_group.add(this.secondTower);
-      console.log('boop');
       _eventDispatcher.default.emit('userFinished');
       _eventDispatcher.default.on('gameover', function (failUE) {
         console.log(failUE); //Could show the user this?
@@ -2565,6 +2561,7 @@ var Theory = /*#__PURE__*/function (_Phaser$Scene) {
         url: 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js',
         sceneKey: 'rexUI'
       });
+      this.load.image('nextPage', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/assets/images/arrow-down-left.png');
     }
   }, {
     key: "create",
@@ -2773,6 +2770,7 @@ var textBox = /*#__PURE__*/function (_Phaser$Scene) {
         url: 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js',
         sceneKey: 'rexUI'
       });
+      this.load.image('nextPage', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/assets/images/arrow-down-left.png');
     }
   }, {
     key: "create",
@@ -2793,7 +2791,6 @@ var textBox = /*#__PURE__*/function (_Phaser$Scene) {
     key: "handleTextBoxUpdate",
     value: function handleTextBoxUpdate(tbCount) {
       this.tutScene.input.enabled = false;
-      console.log(tbCount);
       switch (tbCount) {
         case 1:
           this.mainTextBox.start(text_1, 30);
@@ -3021,7 +3018,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50990" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "56874" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];
