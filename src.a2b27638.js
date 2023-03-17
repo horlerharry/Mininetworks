@@ -2540,7 +2540,17 @@ var COLOR_LIGHT = 0xd7eaf3;
 var COLOR_DARK = 0x14397d;
 var text_1 = 'Hello! Ideally I could show you all this within the game, but that ended up being quite ambitious :)';
 var text_2 = 'I want to take you on a quick journey to show you how where your text message goes from your phone to your friends.';
-var text_3 = '';
+var text_3 = 'You send a text message to your friend, and it is picked up by the closest base station (owned by your sim provided).';
+var text_4 = 'This message is now forwarded onto a Mobile Switching Centre (MSC), for which the purpose is simple: Find the quickest route to the destination.';
+var text_5 = 'Since phone messages travel via towers (Never by satellite!), they rely on the infrastructre to path the way to your friend.';
+var text_6 = 'This process usually takes a few seconds, even in the case of sending a text message to the person sitting next to you.';
+var text_7 = 'Once the route is determined, your message is ready to be sent forward to your friends phone.';
+var text_8 = 'Depending on the distance, the MSC will relay your message through a series of towers until arriving at the closest base station to your friend.';
+var text_9 = 'Now, all that is left is for the closest base station to send your text to your friend!';
+var text_10 = 'And now you can be left on read for the rest of the day :)';
+var text_11 = 'The process of a text message (or voice call) being transmitted and received is fully reliant on the network of communication towers present in our cities or countryside';
+var text_12 = 'With so many more devices being added into the internet eco-system, it is no surprise that this infrastructure and our mobile networks are constantly being innovated upon.';
+var text_13 = 'And with the limited amount of resources avaliable to serve these devices (as you hopefully saw in the game :) ), it comes at no surprise that A.I. is also creeping into the wireless communications world.';
 var Theory = /*#__PURE__*/function (_Phaser$Scene) {
   _inherits(Theory, _Phaser$Scene);
   var _super = _createSuper(Theory);
@@ -2567,8 +2577,13 @@ var Theory = /*#__PURE__*/function (_Phaser$Scene) {
     key: "create",
     value: function create() {
       var _this = this;
-      var main_image = this.add.image(0, 0, 'theory', 'Slide' + 1).setOrigin(0, 0);
-      this.mainTextBox = createTextBox(this, 100, 400, {
+      var background = this.add.group();
+      background.add(this.add.image(0, 0, 'paper_bg').setScale(0.5));
+      background.add(this.add.image(700, 0, 'paper_bg').setScale(0.5));
+      background.add(this.add.image(0, 300, 'paper_bg').setScale(0.55));
+      background.add(this.add.image(672, 300, 'paper_bg').setScale(0.55));
+      this.main_image = this.add.image(0, 0, 'theory', 'Slide' + 1).setOrigin(0, 0).setScale(0.65);
+      this.mainTextBox = createTextBox(this, 100, 450, {
         wrapWidth: 500,
         fixedWidth: 500,
         fixedHeight: 65
@@ -2580,7 +2595,8 @@ var Theory = /*#__PURE__*/function (_Phaser$Scene) {
       });
       _eventDispatcher.default.on('textBoxFinished', function () {
         _this.counter += 1;
-        _this.handleTextBoxUpdate(tbCount);
+        console.log(_this.counter);
+        _this.handleTextBoxUpdate(_this.counter);
       });
       this.events.once('shutdown', function () {
         _eventDispatcher.default.removeAllListeners();
@@ -2620,15 +2636,27 @@ var Theory = /*#__PURE__*/function (_Phaser$Scene) {
           break;
         case 9:
           this.mainTextBox.start(text_9, 30);
+          this.main_image.setFrame('Slide' + tbCount);
           break;
         case 10:
           this.mainTextBox.start(text_10, 30);
+          this.main_image.setFrame('Slide' + tbCount);
           break;
         case 11:
           this.mainTextBox.start(text_11, 30);
+          this.main_image.setFrame('Slide' + tbCount);
           break;
         case 12:
           this.mainTextBox.start(text_12, 30);
+          this.main_image.setFrame('Slide' + (tbCount + 1));
+          break;
+        case 13:
+          this.mainTextBox.start(text_13, 30);
+          this.main_image.setFrame('Slide' + (tbCount + 1));
+          break;
+        case 14:
+          this.scene.start("menuScene");
+          this.scene.stop();
           break;
       }
     }
@@ -3018,7 +3046,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "56874" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "64403" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];
