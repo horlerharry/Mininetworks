@@ -706,7 +706,7 @@ var Preloader = /*#__PURE__*/function (_Phaser$Scene) {
       this.load.atlas("mm_modem", "assets/mainmenu/modem_atlas.png", "assets/mainmenu/modem_atlas.json", null, Phaser.Loader.TEXTURE_ATLAS_JSON_HASH);
       this.load.image("pencil", "assets/mainmenu/pencil.png");
       this.load.script('webfont', 'https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js');
-      this.load.image('nextPage', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/assets/images/arrow-down-left.png');
+      //this.load.image('nextPage', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/assets/images/arrow-down-left.png');
 
       //New handdrawn assets
       this.load.image('hd_phone', 'assets/Hand-Drawn/phone.png');
@@ -1884,7 +1884,7 @@ var Freeplay = /*#__PURE__*/function (_Phaser$Scene) {
               break;
             case 2:
               //Car Class, moves across screen but changes
-              newUser = new _car.default(_this, carCoords[Phaser.Math.RND.between(0, 1)], Phaser.Math.RND.between(100, 550 / cam.zoom)).setDepth(5);
+              newUser = new _car.default(_this, carCoords[Phaser.Math.RND.between(0, 1)], Phaser.Math.RND.between(100, 500 / cam.zoom)).setDepth(5);
               break;
             case 3:
               //Laptop?
@@ -2544,7 +2544,8 @@ var COLOR_LIGHT = 0xd7eaf3;
 var COLOR_DARK = 0x14397d;
 var text_1 = 'Hello! Ideally I could show you all this within the game, but that ended up being quite ambitious :)';
 var text_2 = 'I want to take you on a quick journey to show you how where your text message goes from your phone to your friends.';
-var text_3 = /*#__PURE__*/function (_Phaser$Scene) {
+var text_3 = '';
+var Theory = /*#__PURE__*/function (_Phaser$Scene) {
   _inherits(Theory, _Phaser$Scene);
   var _super = _createSuper(Theory);
   function Theory() {
@@ -2636,9 +2637,7 @@ var text_3 = /*#__PURE__*/function (_Phaser$Scene) {
     }
   }]);
   return Theory;
-}(Phaser.Scene);
-
-//Code from Rex Plugin (Textbox UI)
+}(Phaser.Scene); //Code from Rex Plugin (Textbox UI)
 var GetValue = Phaser.Utils.Objects.GetValue;
 var createTextBox = function createTextBox(scene, x, y, config) {
   var wrapWidth = GetValue(config, 'wrapWidth', 0);
@@ -3022,7 +3021,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52763" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50990" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];
