@@ -315,11 +315,14 @@ var Menu = /*#__PURE__*/function (_Phaser$Scene) {
     key: "create",
     value: function create(data) {
       var _this = this;
+      this.difficulty = 'null';
       this.logo.destroy();
       this.graphics = this.add.graphics().setDepth(3);
       this.pencil = this.add.image(95, 140, "pencil").setScale(0.15).setFlipX(false).setDepth(5).setVisible(false);
+      this.pencil2 = this.add.image(95, 140, "pencil").setScale(0.1).setFlipX(false).setDepth(6).setVisible(false);
       //this.cameras.main.fadeIn(1000,44,151,179);
       this.addFloatingGadgets();
+      this.strikes = this.add.container();
       //Add Title TODO: fancy it up
       this.add.text(180, 0, "Mini Networks", {
         fontFamily: 'Gloria Hallelujah ',
@@ -336,9 +339,82 @@ var Menu = /*#__PURE__*/function (_Phaser$Scene) {
         }
       });
       this.startDrawing = false;
-
+      this.startDrawing2 = false;
       // Add level menu buttons.
 
+      var d_easy = this.add.text(250, 130, 'Easy', {
+        fontFamily: 'Gloria Hallelujah ',
+        fontSize: '20px',
+        fill: '#fff',
+        shadow: {
+          color: '#000',
+          fill: true,
+          offsetY: 2,
+          offsetX: 2
+        },
+        padding: {
+          right: 10
+        }
+      }).setInteractive().on('pointerdown', function () {
+        _this.difficulty = 'easy';
+        _this.pencilAnim(d_easy, _this.pencil2);
+        _this.exitMenu('freeplayScene', 500);
+      }).on('pointerover', function () {
+        _this.pencil2.setVisible(true);
+        _this.pencil2.setPosition(d_easy.x + 5, d_easy.y - 5);
+      }).setVisible(false).on('pointerout', function () {
+        return _this.pencil2.setVisible(false);
+      });
+      var d_medium = this.add.text(250, 160, 'Medium', {
+        fontFamily: 'Gloria Hallelujah ',
+        fontSize: '20px',
+        fill: '#fff',
+        shadow: {
+          color: '#000',
+          fill: true,
+          offsetY: 2,
+          offsetX: 2
+        },
+        padding: {
+          right: 10,
+          up: 5
+        }
+      }).setInteractive().on('pointerdown', function () {
+        _this.difficulty = 'medium';
+        _this.pencilAnim(d_medium, _this.pencil2);
+        _this.exitMenu('freeplayScene', 500);
+      }).on('pointerover', function () {
+        _this.pencil2.setVisible(true);
+        _this.pencil2.setPosition(d_medium.x + 5, d_medium.y - 5);
+      }).setVisible(false).on('pointerout', function () {
+        return _this.pencil2.setVisible(false);
+      });
+      var d_hard = this.add.text(250, 190, 'Hard', {
+        fontFamily: 'Gloria Hallelujah ',
+        fontSize: '20px',
+        fill: '#fff',
+        shadow: {
+          color: '#000',
+          fill: true,
+          offsetY: 2,
+          offsetX: 2
+        },
+        padding: {
+          right: 10,
+          up: 5
+        }
+      }).on('pointerdown', function () {
+        _this.difficulty = 'hard';
+        _this.pencilAnim(d_hard, _this.pencil2);
+        _this.exitMenu('freeplayScene', 500);
+      }).setInteractive().on('pointerover', function () {
+        _this.pencil2.setVisible(true);
+        _this.pencil2.setPosition(d_hard.x + 5, d_hard.y - 5);
+      }).setVisible(false).on('pointerout', function () {
+        return _this.pencil2.setVisible(false);
+      });
+      var difficulty_options = this.add.group().setDepth(1);
+      difficulty_options.addMultiple([d_easy, d_medium, d_hard]);
       var freeplay_button = this.add.text(90, 150, 'Freeplay', {
         fontFamily: 'Gloria Hallelujah ',
         fontSize: '30px',
@@ -352,13 +428,14 @@ var Menu = /*#__PURE__*/function (_Phaser$Scene) {
         padding: {
           right: 10
         }
-      }).setInteractive().on('pointerup', function () {
-        return _this.exitMenuAnimation('freeplayScene', 500, freeplay_button);
+      }).setInteractive().on('pointerdown', function () {
+        difficulty_options.setVisible(true);
+        _this.pencilAnim(freeplay_button, _this.pencil);
       }).on('pointerover', function () {
         _this.pencil.setVisible(true);
         _this.pencil.setPosition(freeplay_button.x + 5, freeplay_button.y - 5);
       }).on('pointerout', function () {
-        return _this.pencil.setVisible(false);
+        _this.pencil.setVisible(false);
       });
       var tutorial_button = this.add.text(90, 100, 'Tutorial', {
         fontFamily: 'Gloria Hallelujah ',
@@ -373,13 +450,16 @@ var Menu = /*#__PURE__*/function (_Phaser$Scene) {
         padding: {
           right: 10
         }
-      }).setInteractive().on('pointerup', function () {
-        return _this.exitMenuAnimation('tutorialScene', 500, tutorial_button);
+      }).setInteractive().on('pointerdown', function () {
+        _this.pencilAnim(tutorial_button, _this.pencil);
+        _this.time.delayedCall(500, _this.exitMenu('tutorialScene', 500));
       }).on('pointerover', function () {
         _this.pencil.setVisible(true);
+        _this.startDrawing = false;
+        difficulty_options.setVisible(false);
         _this.pencil.setPosition(tutorial_button.x + 5, tutorial_button.y - 5);
       }).on('pointerout', function () {
-        return _this.pencil.setVisible(false);
+        _this.pencil.setVisible(false);
       });
       var theory_button = this.add.text(90, 200, 'Theory', {
         fontFamily: 'Gloria Hallelujah ',
@@ -394,10 +474,13 @@ var Menu = /*#__PURE__*/function (_Phaser$Scene) {
         padding: {
           right: 10
         }
-      }).setInteractive().on('pointerup', function () {
-        return _this.exitMenuAnimation('theoryScene', 500, theory_button);
+      }).setInteractive().on('pointerdown', function () {
+        _this.pencilAnim(theory_button, _this.pencil);
+        _this.time.delayedCall(500, _this.exitMenu('theoryScene', 500));
       }).on('pointerover', function () {
         _this.pencil.setVisible(true);
+        _this.startDrawing = false;
+        difficulty_options.setVisible(false);
         _this.pencil.setPosition(theory_button.x + 5, theory_button.y - 5);
       }).on('pointerout', function () {
         return _this.pencil.setVisible(false);
@@ -405,31 +488,34 @@ var Menu = /*#__PURE__*/function (_Phaser$Scene) {
       this.events.emit("scene-awake");
     }
   }, {
-    key: "exitMenuAnimation",
-    value: function exitMenuAnimation(newScene, duration, button) {
-      var _this2 = this;
+    key: "pencilAnim",
+    value: function pencilAnim(button, pencil) {
       //Add pencil strikethrough
-      this.strikeThrough = new Phaser.Curves.Line([90, button.y + 33, this.pencil.x, button.y + 33]);
+
+      if (this.difficulty != 'null') {
+        this.pencil2_strike = new Phaser.Curves.Line([button.x, button.y + 18, pencil.x, button.y + 18]);
+        this.startDrawing2 = true;
+      } else {
+        this.pencil1_strike = new Phaser.Curves.Line([button.x, button.y + 33, pencil.x, button.y + 33]);
+        this.startDrawing = true;
+      }
       var pencilDuration = 200;
-      this.input.enabled = false;
-      this.startDrawing = true;
+      // 
+
       this.tweens.add({
-        targets: this.pencil,
-        x: button.width + this.pencil.x + 30,
-        duration: pencilDuration,
-        onComplete: function onComplete() {
-          _this2.time.delayedCall(500, _this2.exitMenu(newScene, duration));
-        },
-        onCompleteScope: this
+        targets: pencil,
+        x: button.width + pencil.x + 30,
+        duration: pencilDuration
       });
     }
   }, {
     key: "exitMenu",
     value: function exitMenu(newScene, duration) {
-      var _this3 = this;
+      var _this2 = this;
+      this.input.enabled = false;
       this.cameras.main.fadeOut(duration, 0, 0, 0);
       this.time.delayedCall(duration, function () {
-        _this3.scene.start(newScene);
+        _this2.scene.start(newScene, _this2.difficulty);
       });
     }
   }, {
@@ -438,8 +524,12 @@ var Menu = /*#__PURE__*/function (_Phaser$Scene) {
       this.graphics.clear();
       this.graphics.lineStyle(5, 0x00000, 1);
       if (this.startDrawing && this.pencil.x > 90) {
-        this.strikeThrough.p1.x = this.pencil.x - 30;
-        this.strikeThrough.draw(this.graphics);
+        this.pencil1_strike.p1.x = this.pencil.x - 30;
+        this.pencil1_strike.draw(this.graphics);
+      }
+      if (this.startDrawing2 & this.pencil2.x > 230) {
+        this.pencil2_strike.p1.x = this.pencil2.x - 30;
+        this.pencil2_strike.draw(this.graphics);
       }
     }
   }, {
@@ -611,14 +701,12 @@ var Preloader = /*#__PURE__*/function (_Phaser$Scene) {
       this.load.image('greenbutton', 'assets/Sprites/green-button.png');
       this.load.image('bluebutton', 'assets/Sprites/blue-button.png');
       this.load.image('redbutton', 'assets/Sprites/red-button.png');
-      this.load.atlas('basestation', 'assets/Sprites/basestation.png', 'assets/Sprites/basestation.json', null, Phaser.Loader.TEXTURE_ATLAS_JSON_HASH);
       this.load.atlas("mm_laptop", "assets/mainmenu/laptop_atlas.png", "assets/mainmenu/laptop_atlas.json", null, Phaser.Loader.TEXTURE_ATLAS_JSON_HASH);
       this.load.atlas("mm_phone1", "assets/mainmenu/phone1_atlas.png", "assets/mainmenu/phone1_atlas.json", null, Phaser.Loader.TEXTURE_ATLAS_JSON_HASH);
       this.load.atlas("mm_phone2", "assets/mainmenu/phone2_atlas.png", "assets/mainmenu/phone2_atlas.json", null, Phaser.Loader.TEXTURE_ATLAS_JSON_HASH);
       this.load.atlas("mm_tablet", "assets/mainmenu/tablet_atlas.png", "assets/mainmenu/tablet_atlas.json", null, Phaser.Loader.TEXTURE_ATLAS_JSON_HASH);
-      this.load.image("mm_wifi", "assets/mainmenu/wifi.png");
+      //this.load.image("mm_wifi","assets/mainmenu/wifi.png");
       this.load.atlas("mm_modem", "assets/mainmenu/modem_atlas.png", "assets/mainmenu/modem_atlas.json", null, Phaser.Loader.TEXTURE_ATLAS_JSON_HASH);
-      this.load.image("pausebutton", "assets/Hand-Drawn/square_button_pause.png");
       this.load.image("pencil", "assets/mainmenu/pencil.png");
       this.load.script('webfont', 'https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js');
 
@@ -635,6 +723,7 @@ var Preloader = /*#__PURE__*/function (_Phaser$Scene) {
       this.load.atlas('device_bars', 'assets/Hand-Drawn/device_bars.png', 'assets/Hand-Drawn/device_bars.json', null, Phaser.Loader.TEXTURE_ATLAS_JSON_HASH);
       this.load.atlas('relay_bands', 'assets/Hand-Drawn/relay_bands.png', 'assets/Hand-Drawn/relay_bands.json', null, Phaser.Loader.TEXTURE_ATLAS_JSON_HASH);
       this.load.atlas('shapes', 'assets/Hand-Drawn/shapes.png', 'assets/Hand-Drawn/shapes.json', null, Phaser.Loader.TEXTURE_ATLAS_JSON_HASH);
+      this.load.atlas('buttons', 'assets/Hand-Drawn/buttons.png', 'assets/Hand-Drawn/buttons.json', null, Phaser.Loader.TEXTURE_ATLAS_JSON_HASH);
       this.load.atlas('timer', 'assets/Hand-Drawn/timer.png', 'assets/Hand-Drawn/timer.json', null, Phaser.Loader.TEXTURE_ATLAS_JSON_HASH);
     }
   }, {
@@ -779,7 +868,7 @@ var baseStation = /*#__PURE__*/function (_baseEquipment) {
     _this.setSize(_this.mainSprite.displayWidth, _this.mainSprite.displayHeight);
     _this.mainSprite.setInteractive();
     _this.name = name;
-    _this.range = 600;
+    _this.range = 500;
     _this.rangeCircle = new Phaser.Geom.Circle(0, 0, _this.range);
     //Base Station Listeners for Frequency Channels
     _eventDispatcher.default.on('new_frequency', function (freqInfo) {
@@ -790,6 +879,7 @@ var baseStation = /*#__PURE__*/function (_baseEquipment) {
       if (_this.name === bsInfo.name) {
         _this.channelsInUse.push(bsInfo.f);
       }
+      console.log(_this.channelsInUse);
     });
     _eventDispatcher.default.on('relay_to_bs', function (relayInfo) {
       if (_this.name === relayInfo.name) {
@@ -815,7 +905,8 @@ var baseStation = /*#__PURE__*/function (_baseEquipment) {
   }
   _createClass(baseStation, [{
     key: "mouseClick",
-    value: function mouseClick() {
+    value: function mouseClick(pointer) {
+      if (pointer.rightButtonDown()) return;
       if (!this.toggled & this.hover) {
         this.toggled = true;
         if (!this.channelsInUse.includes(this.frequency)) {
@@ -826,13 +917,6 @@ var baseStation = /*#__PURE__*/function (_baseEquipment) {
             t: this.freqType,
             name: this.name,
             range: this.range
-          });
-          _eventDispatcher.default.emit('bstoRelay_selected', {
-            x: this.x + 12,
-            y: this.y - 50,
-            f: this.frequency,
-            t: this.freqType,
-            name: this.name
           });
         }
       } else {
@@ -900,16 +984,30 @@ var userEquipment = /*#__PURE__*/function (_Phaser$GameObjects$C) {
     _this.envelopeGroup = scene.add.container(0, 0).setVisible(false); //Idk why this needed to be a container
     _this.add([_this.mainSprite, _this.graphics, _this.userText, _this.connectionIndictator, _this.envelopeGroup]);
     _this.cameraZoom = scene.cameras.main.zoom;
+    _this.lastSelected = 'null';
     //this.setRotation(Phaser.Math.RND.between(-15,15))
-    _this.bsName = 'null';
 
+    //Data on base station or relay selected :)
+    _this.bsData = {
+      name: 'null',
+      range: 0,
+      coords: {
+        x: 0,
+        y: 0
+      },
+      selected: false
+    };
+    _this.relayData = {
+      name: 'null',
+      range: 0,
+      coords: {
+        x: 0,
+        y: 0
+      },
+      selected: false
+    };
     //Unique Properties
     _this.bars = 3;
-    _this.bsCoords = {
-      x: 0,
-      y: 0
-    };
-    _this.bs_target = false;
     _this.successCount = 0;
     _this.begun = false;
     _this.tethered = false;
@@ -917,24 +1015,60 @@ var userEquipment = /*#__PURE__*/function (_Phaser$GameObjects$C) {
     _this.on('pointerdown', _this.handlePointerDown, _assertThisInitialized(_this));
     //Base station selected
     _eventDispatcher.default.on('bs_selected', function (eventData) {
-      if (_this.begun) return;
-      _this.bs_target = true;
+      console.log('bs_selected');
+      if (_this.begun) return; //Transmission has already started.
+      _this.lastSelected = 'bs';
+      //Update Base Station Properties
+      _this.bsData.selected = true;
       _this.frequency = eventData.f;
       _this.freqType = eventData.t;
-      if (eventData.name === _this.bsName) return; //No need to run this function if its the same Base Station.
-      //Except frequency, which could change.
-      _this.bsName = eventData.name;
-      _this.bsRange = eventData.range;
-      _this.bsCoords = {
+      _this.bsData.name = eventData.name;
+      _this.bsData.range = eventData.range;
+      _this.bsData.coords = {
         x: eventData.x,
         y: eventData.y
       };
-      var localCoords = _this.getLocalPoint(_this.bsCoords.x, _this.bsCoords.y);
+
+      //Update transmission properties
+      var localCoords = _this.getLocalPoint(_this.bsData.coords.x, _this.bsData.coords.y);
       _this.tLine.p0.x = localCoords.x;
       _this.tLine.p0.y = localCoords.y;
-      _this.distance = _this.tLine.getLength();
-      _this.speed = Math.min(_this.tLine.getLength() / 60, 8);
-      _this.duration = 3000 + Math.pow(2.71, _this.speed);
+      _this.distance = Phaser.Math.Distance.Between(_this.x, _this.y, _this.bsData.coords.x, _this.bsData.coords.y);
+      _this.speed = Math.min(_this.distance / 60, 8);
+      _this.duration = 3000 + Math.pow(3, _this.speed);
+      console.log(_this.distance);
+      if (_this.duration > 7000) {
+        _this.bars = 1;
+      } else if (_this.duration > 4000) {
+        _this.bars = 2;
+      } else {
+        _this.bars = 3;
+      }
+    });
+    _eventDispatcher.default.on('relay_selected', function (eventData) {
+      console.log('relay_selected');
+      if (_this.begun) return; //Transmission has already started.
+      _this.lastSelected = 'relay';
+
+      //Update Relay Properties
+      _this.relayData.selected = true;
+      _this.frequency = eventData.f;
+      _this.freqType = eventData.t;
+      _this.relayData.name = eventData.name;
+      _this.relayData.range = eventData.range;
+      _this.relayData.coords = {
+        x: eventData.x,
+        y: eventData.y
+      };
+
+      //Update transmission properties
+      var localCoords = _this.getLocalPoint(_this.relayData.coords.x, _this.relayData.coords.y);
+      _this.tLine.p0.x = localCoords.x;
+      _this.tLine.p0.y = localCoords.y;
+      _this.distance = Phaser.Math.Distance.Between(_this.x, _this.y, _this.relayData.coords.x, _this.relayData.coords.y);
+      console.log(_this.distance);
+      _this.speed = Math.min(_this.distance / 60, 8);
+      _this.duration = 3000 + Math.pow(3, _this.speed);
       if (_this.duration > 7000) {
         _this.bars = 1;
       } else if (_this.duration > 4000) {
@@ -946,29 +1080,55 @@ var userEquipment = /*#__PURE__*/function (_Phaser$GameObjects$C) {
 
     //Base station unselected
     _eventDispatcher.default.on('bs_unselected', function (name) {
-      if (_this.bsName === name) _this.bs_target = false;
+      if (_this.bsData.name == name) _this.bsData.selected = false;
+    });
+    _eventDispatcher.default.on('relay_unselected', function (name) {
+      if (_this.relayData.name == name) _this.relayData.selected = false;
     });
     return _this;
   }
   _createClass(userEquipment, [{
     key: "handlePointerDown",
-    value: function handlePointerDown() {
-      this.tethered = this.bs_target;
-      if (this.tethered) {
-        _eventDispatcher.default.emit('user_started', {
-          x: this.bsCoords.x,
-          y: this.bsCoords.y,
-          f: this.frequency,
-          name: this.bsName
-        });
-        var _this$newBoxAnim = this.newBoxAnim(this.scene, this.handleEnvelope, this.successHandler);
-        var _this$newBoxAnim2 = _slicedToArray(_this$newBoxAnim, 2);
-        this.boxMove = _this$newBoxAnim2[0];
-        this.paths = _this$newBoxAnim2[1];
-        this.connectionIndictator.setFrame(this.freqType + '_' + this.bars);
-        this.envelopeGroup.setVisible(true);
-        this.disableInteractive();
+    value: function handlePointerDown(pointer) {
+      if (pointer.rightButtonDown()) return;
+      console.log(this.lastSelected);
+      if (this.lastSelected == 'bs') {
+        console.log(this.distance);
+        if (this.distance < this.bsData.range) {
+          this.tethered = this.bsData.selected;
+          if (this.tethered) {
+            _eventDispatcher.default.emit('user_started', {
+              f: this.frequency,
+              name: this.bsData.name
+            });
+            _eventDispatcher.default.emit('bs_unselected', this.bsData.name);
+            this.handleTransmission();
+          }
+        }
+      } else if (this.lastSelected == 'relay') {
+        if (this.distance < this.relayData.range) {
+          this.tethered = this.relayData.selected;
+          if (this.tethered) {
+            _eventDispatcher.default.emit('user_started', {
+              f: this.frequency,
+              name: this.relayData.name
+            });
+            _eventDispatcher.default.emit('relay_unselected', this.relayData.name);
+            this.handleTransmission();
+          }
+        }
       }
+    }
+  }, {
+    key: "handleTransmission",
+    value: function handleTransmission() {
+      var _this$newBoxAnim = this.newBoxAnim(this.scene, this.handleEnvelope, this.successHandler);
+      var _this$newBoxAnim2 = _slicedToArray(_this$newBoxAnim, 2);
+      this.boxMove = _this$newBoxAnim2[0];
+      this.paths = _this$newBoxAnim2[1];
+      this.connectionIndictator.setFrame(this.freqType + '_' + this.bars);
+      this.envelopeGroup.setVisible(true);
+      this.disableInteractive();
     }
   }, {
     key: "newBoxAnim",
@@ -1037,25 +1197,24 @@ var userEquipment = /*#__PURE__*/function (_Phaser$GameObjects$C) {
         }
       }
     }
-
-    /*
-    reset_tweens() {
-        for(var i=0;i<this.paths.length;i++) {
-            this.boxMove.data[i].restart();
-            this.paths[i].t = 0;
-        }
-    
-    }*/
   }, {
     key: "successHandler",
     value: function successHandler(scene) {
       this.envelopeGroup.setVisible(false);
       this.boxMove.stop();
-      _eventDispatcher.default.emit('add_score', 5);
-      _eventDispatcher.default.emit('user_finished', {
-        f: this.frequency,
-        name: this.bsName
-      }); //This informs the Base Station that the user has finished.
+      //emitter.emit('add_score',4);
+      if (this.lastSelected == 'relay') {
+        _eventDispatcher.default.emit('user_finished', {
+          f: this.frequency,
+          name: this.relayData.name
+        });
+      } else {
+        _eventDispatcher.default.emit('user_finished', {
+          f: this.frequency,
+          name: this.bsData.name
+        }); //This informs the Base Station that the user has finished.
+      }
+
       _eventDispatcher.default.emit('userFinished'); // This updates the scene to spawn new entities.
       this.cleanup();
     }
@@ -1101,11 +1260,11 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
 var Car = /*#__PURE__*/function (_userEquipment) {
   _inherits(Car, _userEquipment);
   var _super = _createSuper(Car);
-  function Car(scene, x, y, scoreCallback) {
+  function Car(scene, x, y) {
     var _this;
     _classCallCheck(this, Car);
-    _this = _super.call(this, scene, x, y, 'hd_car', scoreCallback);
-    _this.mainSprite.setScale(0.5);
+    _this = _super.call(this, scene, x, y, 'hd_car');
+    _this.mainSprite.setScale(0.4);
     _this.setSize(_this.mainSprite.displayWidth, _this.mainSprite.displayHeight);
     _this.setInteractive();
     _this.userText.setPosition(0, 50);
@@ -1125,17 +1284,20 @@ var Car = /*#__PURE__*/function (_userEquipment) {
     key: "update",
     value: function update() {
       _get(_getPrototypeOf(Car.prototype), "update", this).call(this);
-      var conCoords = this.getLocalPoint(this.x, this.y);
+      //var conCoords = this.getLocalPoint(this.x,this.y);
       this.setPosition(this.x + this.mainSprite.x, this.y);
-      var bsAdjustedCoords = this.getLocalPoint(this.bsCoords.x, this.bsCoords.y);
+      if (this.lastSelected == 'bs') {
+        var lastSelectedCoords = this.bsData.coords;
+      } else {
+        var lastSelectedCoords = this.relayData.coords;
+      }
+      var targetAdjusted = this.getLocalPoint(lastSelectedCoords.x, lastSelectedCoords.y);
       this.tLine.p0 = {
-        x: bsAdjustedCoords.x,
-        y: bsAdjustedCoords.y
+        x: targetAdjusted.x,
+        y: targetAdjusted.y
       };
-      this.tLine.p1 = {
-        x: conCoords.x,
-        y: conCoords.y
-      };
+      //this.tLine.p1 = {x:conCoords.x,y: conCoords.y};
+      this.distance = Phaser.Math.Distance.Between(this.x, this.y, lastSelectedCoords.x, lastSelectedCoords.y);
       if (this.x < 0 || this.x > this.scene.game.config.width / this.scene.cameras.main.zoom) {
         _eventDispatcher.default.emit('gameover', this);
       }
@@ -1170,11 +1332,11 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
 var Phone = /*#__PURE__*/function (_userEquipment) {
   _inherits(Phone, _userEquipment);
   var _super = _createSuper(Phone);
-  function Phone(scene, x, y, scoreCallback) {
+  function Phone(scene, x, y) {
     var _this;
-    var maxTime = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 15;
+    var maxTime = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 15;
     _classCallCheck(this, Phone);
-    _this = _super.call(this, scene, x, y, 'hd_phone', scoreCallback);
+    _this = _super.call(this, scene, x, y, 'hd_phone');
     _this.mainSprite.setScale(0.3);
     _this.connectionIndictator.setPosition(40, -40);
     _this.setSize(_this.mainSprite.displayWidth, _this.mainSprite.displayHeight);
@@ -1242,11 +1404,11 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
 var Laptop = /*#__PURE__*/function (_userEquipment) {
   _inherits(Laptop, _userEquipment);
   var _super = _createSuper(Laptop);
-  function Laptop(scene, x, y, scoreCallback) {
+  function Laptop(scene, x, y) {
     var _this;
-    var maxTime = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 32;
+    var maxTime = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 32;
     _classCallCheck(this, Laptop);
-    _this = _super.call(this, scene, x, y, 'hd_laptop', scoreCallback);
+    _this = _super.call(this, scene, x, y, 'hd_laptop');
     _this.mainSprite.setScale(0.3);
     _this.connectionIndictator.setPosition(-50, 0);
     _this.setSize(_this.mainSprite.displayWidth, _this.mainSprite.displayHeight);
@@ -1314,11 +1476,11 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
 var Tablet = /*#__PURE__*/function (_userEquipment) {
   _inherits(Tablet, _userEquipment);
   var _super = _createSuper(Tablet);
-  function Tablet(scene, x, y, scoreCallback) {
+  function Tablet(scene, x, y) {
     var _this;
-    var maxTime = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 20;
+    var maxTime = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 20;
     _classCallCheck(this, Tablet);
-    _this = _super.call(this, scene, x, y, 'hd_tablet', scoreCallback);
+    _this = _super.call(this, scene, x, y, 'hd_tablet');
     _this.mainSprite.setScale(0.2);
     _this.connectionIndictator.setPosition(60, -30);
     _this.setSize(_this.mainSprite.displayWidth, _this.mainSprite.displayHeight);
@@ -1393,56 +1555,57 @@ var relayBase = /*#__PURE__*/function (_baseEquipment) {
     _classCallCheck(this, relayBase);
     _this = _super.call(this, scene, x, y, 'hd_relayStation');
     //Always readjust your hit areas :)
-    _this.mainSprite.setScale(0.5);
+    _this.mainSprite.setScale(0.3);
+    _this.mainSprite.y -= 30;
     _this.setSize(_this.mainSprite.displayWidth, _this.mainSprite.displayHeight);
     _this.mainSprite.setInteractive();
     //this.setInteractive();
     _this.baseLine = new Phaser.Curves.Line([0, 0, 12, -50]);
     _this.userLine = new Phaser.Curves.Line([0, 0, 0, 0]);
     _this.tethered = false;
-    _this.bs_target = false;
+    _this.bsData = {
+      name: 'null',
+      range: 0,
+      coords: {
+        x: 0,
+        y: 0
+      },
+      selected: false
+    };
     _this.inUse = false;
     _this.range = 300;
     _this.name = name;
     _this.rangeCircle = new Phaser.Geom.Circle(0, 0, _this.range);
-    _this.bsCoords = {
-      x: 0,
-      y: 0
-    };
-    _this.bsName = 'null';
     _this.targetCoords = {
       x: 0,
       y: 0
     };
-    _this.relayIcon = scene.add.sprite(12, -50, 'relay_bands', 'red').setScale(0.5);
+    _this.relayIcon = scene.add.sprite(12, -50, 'relay_bands', 'red').setScale(0.3);
     _this.add(_this.relayIcon);
     scene.input.on('pointerdown', _this.mouseClick, _assertThisInitialized(_this));
     scene.input.setDraggable(_this.mainSprite);
-    _eventDispatcher.default.on('bstoRelay_selected', function (eventData) {
-      //Catch clause
+    _eventDispatcher.default.on('bs_selected', function (eventData) {
+      _this.mainSprite.input.draggable = false;
+      if (_this.tethered) return; //Transmission has already started.
+      console.log('bs_to_relay');
 
-      _this.bs_target = !_this.bs_target;
-      if (!_this.tethered) {
-        _this.frequency = eventData.f;
-        _this.freqType = eventData.t;
-      }
-      if (eventData.x == _this.bsCoords.x && eventData.y == _this.bsCoords.y) return; //No need to run this function if its the same Base Station.
-      //Except frequency, which could change.
-      _this.bsName = eventData.name;
-      _this.bsCoords = {
+      //Update Base Station Properties
+      _this.bsData.selected = true;
+      _this.frequency = eventData.f;
+      _this.freqType = eventData.t;
+      _this.bsData.name = eventData.name;
+      _this.bsData.range = eventData.range;
+      _this.bsData.coords = {
         x: eventData.x,
         y: eventData.y
       };
-      var localCoords = _this.getLocalPoint(_this.bsCoords.x, _this.bsCoords.y);
-      _this.mainSprite.input.draggable = false;
-      _this.baseLine.p0.x = localCoords.x;
-      _this.baseLine.p0.y = localCoords.y;
+
+      //Update transmission properties
+      _this.updateBaseStationCoords();
+      _this.distance = _this.baseLine.getLength();
       _this.speed = Math.min(_this.baseLine.getLength() / 60, 8);
       _this.duration = 3000 + Math.pow(2.71, _this.speed);
-
-      // [this.boxMove, this.paths] = this.newBoxAnim(this.scene,this.handleEnvelope,this.successHandler);
     });
-
     _eventDispatcher.default.on('user_started', function (bsInfo, user) {
       if (bsInfo.name === _this.name) {
         _eventDispatcher.default.emit('relay_to_bs', {
@@ -1453,8 +1616,7 @@ var relayBase = /*#__PURE__*/function (_baseEquipment) {
         _this.inUse = true;
         _this.mainSprite.input.draggable = false;
         _this.toggled = false;
-      } else {
-        _this.bs_target = false;
+        _this.disableInteractive();
       }
     });
     _eventDispatcher.default.on('user_finished', function (bsInfo) {
@@ -1466,6 +1628,7 @@ var relayBase = /*#__PURE__*/function (_baseEquipment) {
         console.log('end');
         _this.inUse = false;
         _this.mainSprite.input.draggable = true;
+        _this.setInteractive();
       }
     });
     _eventDispatcher.default.on('bs_unselected', function (bsInfo) {
@@ -1478,12 +1641,10 @@ var relayBase = /*#__PURE__*/function (_baseEquipment) {
 
     scene.input.on('drag', function (pointer, obj, dragX, dragY) {
       var cursorLocation = this.scene.cameras.main.getWorldPoint(this.scene.input.activePointer.x, this.scene.input.activePointer.y);
-      obj.parentContainer.setPosition(cursorLocation.x, cursorLocation.y);
+      obj.parentContainer.setPosition(cursorLocation.x, cursorLocation.y + 30);
     }, _assertThisInitialized(_this));
     scene.input.on('dragend', function (pointer, obj) {
-      this.bsCoords = this.getLocalPoint(this.bsCoords.x, this.bsCoords.y);
-      this.baseLine.p0.x = this.bsCoords.x;
-      this.baseLine.p0.y = this.bsCoords.y;
+      this.updateBaseStationCoords();
     }, _assertThisInitialized(_this));
     return _this;
   }
@@ -1494,14 +1655,20 @@ var relayBase = /*#__PURE__*/function (_baseEquipment) {
   //-Graphical indication of what frequency the relay is using. Colour of bulb?
   _createClass(relayBase, [{
     key: "mouseClick",
-    value: function mouseClick() {
-      if (!this.inUse) {
-        if (!this.toggled & this.hover) {
-          this.tethered = this.bs_target;
-          if (this.tethered && !this.inUse) {
+    value: function mouseClick(pointer) {
+      if (this.bsData.selected || this.tethered) {
+        console.log(this.hover, this.inUse);
+        if (pointer.rightButtonDown() && this.hover && !this.inUse) {
+          this.bsData.selected = false;
+          this.mainSprite.input.draggable = true;
+          this.tethered = false;
+          this.toggled = false;
+        } else if (!this.inUse) {
+          if (!this.toggled & this.hover) {
+            this.tethered = true;
             this.toggled = true;
-            console.log('beep');
-            _eventDispatcher.default.emit('bs_selected', {
+            this.mainSprite.input.draggable = false;
+            _eventDispatcher.default.emit('relay_selected', {
               x: this.x + 12,
               y: this.y - 50,
               f: this.frequency,
@@ -1509,12 +1676,16 @@ var relayBase = /*#__PURE__*/function (_baseEquipment) {
               name: this.name,
               range: this.range
             });
+          } else {
+            this.graphics.clear();
+            this.toggled = false;
+            _eventDispatcher.default.emit('relay_unselected', this.name);
           }
-        } else {
-          this.graphics.clear();
-          this.toggled = false;
-          _eventDispatcher.default.emit('bs_unselected', this.name);
         }
+      } else {
+        this.graphics.clear();
+        this.mainSprite.input.draggable = true;
+        this.tethered = false;
       }
     }
   }, {
@@ -1529,6 +1700,13 @@ var relayBase = /*#__PURE__*/function (_baseEquipment) {
       } else {
         this.relayIcon.setVisible(false);
       }
+    }
+  }, {
+    key: "updateBaseStationCoords",
+    value: function updateBaseStationCoords() {
+      var localBSCoords = this.getLocalPoint(this.bsData.coords.x, this.bsData.coords.y);
+      this.baseLine.p0.x = localBSCoords.x;
+      this.baseLine.p0.y = localBSCoords.y;
     }
   }]);
   return relayBase;
@@ -1565,6 +1743,9 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
 var RED_HEX = 0xec1c24;
 var BLUE_HEX = 0x3f48cc;
 var GREEN_HEX = 0x0ed145;
+var YELLOW_HEX = 0xffec00;
+var PINK_HEX = 0xa02789;
+var ORANGE_HEX = 0xff8100;
 var Freeplay = /*#__PURE__*/function (_Phaser$Scene) {
   _inherits(Freeplay, _Phaser$Scene);
   var _super = _createSuper(Freeplay);
@@ -1576,8 +1757,19 @@ var Freeplay = /*#__PURE__*/function (_Phaser$Scene) {
   }
   _createClass(Freeplay, [{
     key: "init",
-    value: function init(data) {
+    value: function init(difficulty) {
       this.cameras.main.fadeIn(1000, 0, 0, 0);
+      if (difficulty == 'hard') {
+        this.score_threshold = 20;
+        this.score_multiplier = 2;
+      } else if (difficulty == 'medium') {
+        this.score_threshold = 30;
+        this.score_multiplier = 1;
+      } else {
+        //difficulty == easy
+        this.score_threshold = 35;
+        this.score_multiplier = 1;
+      }
     }
   }, {
     key: "preload",
@@ -1594,32 +1786,50 @@ var Freeplay = /*#__PURE__*/function (_Phaser$Scene) {
       background.add(this.add.image(700, 0, 'paper_bg').setScale(0.5));
       background.add(this.add.image(0, 500, 'paper_bg').setScale(0.5));
       background.add(this.add.image(700, 500, 'paper_bg').setScale(0.5));
+      background.add(this.add.image(1400, 0, 'paper_bg').setScale(0.5));
+      background.add(this.add.image(2100, 0, 'paper_bg').setScale(0.5));
+      background.add(this.add.image(1400, 500, 'paper_bg').setScale(0.5));
+      background.add(this.add.image(2100, 500, 'paper_bg').setScale(0.5));
+      background.add(this.add.image(0, 1000, 'paper_bg').setScale(0.5));
+      background.add(this.add.image(700, 1000, 'paper_bg').setScale(0.5));
+      background.add(this.add.image(1400, 1000, 'paper_bg').setScale(0.5));
+      background.add(this.add.image(2100, 1000, 'paper_bg').setScale(0.5));
+      background.add(this.add.image(0, 1500, 'paper_bg').setScale(0.5));
+      background.add(this.add.image(700, 1500, 'paper_bg').setScale(0.5));
+      background.add(this.add.image(1400, 1500, 'paper_bg').setScale(0.5));
+      background.add(this.add.image(2100, 1500, 'paper_bg').setScale(0.5));
+
       //Camera Control
       this.fadePlugin = this.plugins.start('rexkawaseblurpipelineplugin');
       this.input.setDefaultCursor('pencil_cursor, pointer');
       this.score = 0;
-      this.score_threshold = 20;
+      this.newZoom = 1.0;
+      this.zoomDuration = 10000;
+      this.cameraThreshold = this.score_threshold + 5;
+      this.buttonThreshold = 100;
       var cam = this.cameras.main;
-      cam.setBounds(0, 0, this.game.config.width * 2, this.game.config.height * 2);
+      cam.setBounds(0, 0, this.game.config.width, this.game.config.height);
       var UIcam = this.cameras.add(0, 0, this.game.config.width, this.game.config.height).setName("UIcam");
       var pauseCam = this.cameras.add(0, 0, this.game.config.width, this.game.config.height).setName("pauseCam");
-      _eventDispatcher.default.once('begin_camera', function () {
-        cam.zoomTo(0.8, 1000);
-        /*
-        const visibleWidth = this.game.config.width*2 / cam.zoom;
-        const visibleHeight = this.game.config.height*2 / cam.zoom;
-        const offsetX = (visibleWidth - this.game.config.width*2) / 2;
-        const offsetY = (visibleHeight - this.game.config.height*2) / 2;
-        const bounds = new Phaser.Geom.Rectangle(
-        offsetX,
-        offsetY,
-        visibleWidth,
-        visibleHeight
-        );
-        cam.setBounds(bounds.x, bounds.y, bounds.width, bounds.height);*/
+      _eventDispatcher.default.on('camera_update', function () {
+        _this.newZoom -= 0.1;
+        cam.zoomTo(_this.newZoom, _this.zoomDuration, 'Linear', true, function (camera, progress) {
+          _this.UE_group.getChildren().forEach(function (child) {
+            child.cameraZoom = camera.zoom;
+          });
+          var viewportWidth = camera.width;
+          var viewportHeight = camera.height;
+          var centerX = _this.game.config.width / 2; // * camera.zoom;
+          var centerY = _this.game.config.height / 2; //* camera.zoom;
+          var cameraX = centerX - viewportWidth / 2;
+          var cameraY = centerY - viewportHeight / 2;
+          camera.centerOn(cameraX, cameraY);
+        });
+        var new_relay = new _relayBase.default(_this, Phaser.Math.RND.between(100, 700), Phaser.Math.RND.between(100, 500), 'relay_' + _this.RS_group.countActive() + 1);
+        _this.RS_group.add(new_relay);
+        UIcam.ignore(_this.RS_group);
+        pauseCam.ignore(_this.RS_group);
       });
-
-      this.cameras.main.on('zoom', this.updatePhysicsWorldBounds, this);
 
       //Gameobject Reactive
       this.input.on('gameobjectdown', function (pointer, gameObject) {
@@ -1649,15 +1859,21 @@ var Freeplay = /*#__PURE__*/function (_Phaser$Scene) {
           gameObject.disableInteractive();
         }
       });
+
+      //Group Setup
+
       this.UE_group = this.add.group({
         runChildUpdate: true
-      });
+      }).setDepth(1);
+      this.RS_group = this.add.group({
+        runChildUpdate: true
+      }).setDepth(2);
       this.BS_group = this.add.group({
         runChildUpdate: true
-      });
+      }).setDepth(3);
       _eventDispatcher.default.on('userFinished', function (bsInfo) {
         var carCoords = [25, 775 / cam.zoom];
-        _this.maxUsers = 1 + Phaser.Math.FloorTo(_this.score / _this.score_threshold);
+        _this.maxUsers = 1; // + Phaser.Math.FloorTo(this.score/this.score_threshold);
         for (var i = 0; i < _this.maxUsers; i++) {
           var newUser = 0;
           if (_this.UE_group.countActive() > _this.maxUsers) break;
@@ -1690,13 +1906,15 @@ var Freeplay = /*#__PURE__*/function (_Phaser$Scene) {
         fill: '#000',
         fontFamily: 'Gloria Hallelujah'
       });
-      this.mainTower = new _baseStation.default(this, Phaser.Math.RND.between(50, 125), 100, 'bs_1').setDepth(1);
+      //Add all towers
+      this.mainTower = new _baseStation.default(this, Phaser.Math.RND.between(300, 375), 300, 'bs_1').setDepth(1);
+      this.secondTower = new _baseStation.default(this, 1000, 1000, 'bs_2').setDepth(1);
       var relayOne = new _relayBase.default(this, 450, 450, 'relay_1').setDepth(1);
-      this.BS_group.add(relayOne);
+      console.log('boop');
+      this.RS_group.add(relayOne);
       this.BS_group.add(this.mainTower);
-
-      //this.add.existing(this.mainTower);
-      //this.add.existing(relayOne);
+      this.BS_group.add(this.secondTower);
+      console.log('boop');
       _eventDispatcher.default.emit('userFinished');
       _eventDispatcher.default.on('gameover', function (failUE) {
         console.log(failUE); //Could show the user this?
@@ -1708,36 +1926,93 @@ var Freeplay = /*#__PURE__*/function (_Phaser$Scene) {
       }, this);
 
       //UI Buttons-------------------------------------------------------------------------------------
-      var pause_button = this.add.sprite(this.game.config.width - 50, 30, 'pausebutton').setInteractive().on('pointerdown', function () {
+      var pause_button = this.add.sprite(this.game.config.width - 50, 30, 'shapes', 'pause_button').setInteractive().on('pointerdown', function () {
         _this.blur_cameras(cam, UIcam, 4);
         pause_button.setVisible(false);
         _this.scene.pause();
         _this.scene.launch('pauseScene');
       }).setScale(0.5).setAlpha(1);
       _eventDispatcher.default.on('add_score', function (num) {
-        _this.score += num;
+        _this.score += num * _this.score_multiplier;
         _this.scoreText.setText('Score: ' + _this.score);
+        if (_this.score > _this.cameraThreshold) {
+          _this.zoomDuration *= 2;
+          _this.cameraThreshold *= 2;
+          _eventDispatcher.default.emit('camera_update');
+        }
+        if (_this.score > _this.buttonThreshold) {
+          _this.buttonThreshold += 100;
+          if (_this.buttonThreshold == 200) {
+            yellow_button.setVisible(true);
+            _this.adjust_buttons(frequency_buttons);
+          } else if (_this.buttonThreshold == 300) {
+            pink_button.setVisible(true);
+            _this.adjust_buttons(frequency_buttons);
+          } else if (_this.buttonThreshold == 500) {
+            orange_button.setVisible(true);
+            _this.adjust_buttons(frequency_buttons);
+          }
+          cam.ignore(frequency_buttons);
+        }
       });
-
+      var frequency_buttons = this.add.group();
       //Base Station UI Control
-      var red_button = this.add.sprite(300, this.game.config.height - 50, 'redbutton').setInteractive().setDepth(1).on('pointerdown', function () {
+      var red_button = this.add.sprite(350, this.game.config.height - 50, 'buttons', 'redbutton').setDepth(1).setScale(0.6)
+      //red_button.setSize(red_button.displayWidth,red_button.displayWidth)
+      .setInteractive().on('pointerdown', function () {
         _eventDispatcher.default.emit('new_frequency', {
           f: RED_HEX,
           name: 'red'
         });
+        _eventDispatcher.default.emit('bs_unselected', 'bs_1');
       });
-      var green_button = this.add.sprite(400, this.game.config.height - 50, 'greenbutton').setInteractive().setDepth(1).on('pointerdown', function () {
+      var green_button = this.add.sprite(450, this.game.config.height - 50, 'buttons', 'greenbutton').setScale(0.6)
+      //green_button.setSize(green_button.displayWidth,green_button.displayHeight)
+      .setDepth(1).setInteractive().on('pointerdown', function () {
         _eventDispatcher.default.emit('new_frequency', {
           f: GREEN_HEX,
           name: 'green'
         });
+        _eventDispatcher.default.emit('bs_unselected', 'bs_1');
       });
-      var blue_button = this.add.sprite(500, this.game.config.height - 50, 'bluebutton').setInteractive().setDepth(1).on('pointerdown', function () {
+      var blue_button = this.add.sprite(550, this.game.config.height - 50, 'buttons', 'bluebutton').setScale(0.6)
+      //blue_button.setSize(blue_button.displayWidth,blue_button.displayHeight)
+      .setDepth(1).setInteractive().on('pointerdown', function () {
         _eventDispatcher.default.emit('new_frequency', {
           f: BLUE_HEX,
           name: 'blue'
         });
+        _eventDispatcher.default.emit('bs_unselected', 'bs_1');
       });
+      var yellow_button = this.add.sprite(650, this.game.config.height - 50, 'buttons', 'yellowbutton').setScale(0.6)
+      //yellow_button.setSize(yellow_button.displayWidth,yellow_button.displayHeight)
+      .setDepth(1).setInteractive().setVisible(false).on('pointerdown', function () {
+        _eventDispatcher.default.emit('new_frequency', {
+          f: YELLOW_HEX,
+          name: 'yellow'
+        });
+        _eventDispatcher.default.emit('bs_unselected', 'bs_1');
+      });
+      var pink_button = this.add.sprite(750, this.game.config.height - 50, 'buttons', 'pinkbutton').setScale(0.6)
+      // pink_button.setSize(pink_button.displayWidth,pink_button.displayHeight)
+      .setDepth(1).setInteractive().setVisible(false).on('pointerdown', function () {
+        _eventDispatcher.default.emit('new_frequency', {
+          f: PINK_HEX,
+          name: 'pink'
+        });
+        _eventDispatcher.default.emit('bs_unselected', 'bs_1');
+      });
+      var orange_button = this.add.sprite(850, this.game.config.height - 50, 'buttons', 'orangebutton').setScale(0.6)
+      //orange_button.setSize(orange_button.displayWidth,orange_button.displayHeight)
+      .setDepth(1).setInteractive().setVisible(false).on('pointerdown', function () {
+        _eventDispatcher.default.emit('new_frequency', {
+          f: ORANGE_HEX,
+          name: 'orange'
+        });
+        _eventDispatcher.default.emit('bs_unselected', 'bs_1');
+      });
+      frequency_buttons.addMultiple([red_button, blue_button, green_button, yellow_button, pink_button, orange_button]);
+      this.adjust_buttons(frequency_buttons);
       this.events.on('resume', function () {
         _this.fadePlugin.remove(cam);
         _this.fadePlugin.remove(UIcam);
@@ -1749,16 +2024,21 @@ var Freeplay = /*#__PURE__*/function (_Phaser$Scene) {
         this.fadePlugin.stop();
         _eventDispatcher.default.removeAllListeners();
       }, this);
-      cam.ignore([this.scoreText, red_button, green_button, blue_button, pause_button]);
-      UIcam.ignore([this.mainTower, this.mainTower.graphics, this.UE_group, relayOne, pause_button, background]);
-      pauseCam.ignore([this.scoreText, red_button, green_button, blue_button, this.mainTower, this.mainTower.graphics, this.UE_group, relayOne, background]);
+      cam.ignore([this.scoreText, frequency_buttons, pause_button]);
+      UIcam.ignore([this.BS_group, this.RS_group, this.UE_group, pause_button, background]);
+      pauseCam.ignore([this.scoreText, frequency_buttons, this.BS_group, this.UE_group, this.RS_group, background]);
     }
 
     //UPDATE FUNCTION
   }, {
     key: "update",
-    value: function update(time, delta) {
-      if (this.score > 10) _eventDispatcher.default.emit('begin_camera');
+    value: function update(time, delta) {}
+  }, {
+    key: "adjust_buttons",
+    value: function adjust_buttons(buttons) {
+      buttons.getChildren().forEach(function (sprite) {
+        sprite.x -= 50;
+      }, this);
     }
   }, {
     key: "blur_cameras",
@@ -1769,14 +2049,6 @@ var Freeplay = /*#__PURE__*/function (_Phaser$Scene) {
       this.fadePlugin.add(UIcam, {
         blur: b
       });
-    }
-  }, {
-    key: "updatePhysicsWorldBounds",
-    value: function updatePhysicsWorldBounds() {
-      var zoomFactor = this.cameras.main.zoom;
-      var worldWidth = this.scale.width / zoomFactor;
-      var worldHeight = this.scale.height / zoomFactor;
-      this.physics.world.setBounds(0, 0, worldWidth, worldHeight);
     }
   }]);
   return Freeplay;
@@ -1825,7 +2097,7 @@ var Pause = /*#__PURE__*/function (_Phaser$Scene) {
         fontFamily: 'Gloria Hallelujah',
         fill: '#000'
       });
-      var pause_button = this.add.sprite(this.game.config.width - 50, 30, 'pausebutton').on('pointerdown', function () {
+      var pause_button = this.add.sprite(this.game.config.width - 50, 30, 'shapes', 'pause_button').on('pointerdown', function () {
         _this.scene.resume("freeplayScene");
         _this.scene.stop();
       }).setScale(0.5);
@@ -2030,24 +2302,27 @@ var Tutorial = /*#__PURE__*/function (_Phaser$Scene) {
           gameObject.disableInteractive();
         }
       });
-      this.red_button = this.add.sprite(300, this.game.config.height - 50, 'redbutton').setInteractive().setDepth(1).setVisible(false).on('pointerdown', function () {
+      var frequency_buttons = this.add.group();
+      //Base Station UI Control
+      var red_button = this.add.sprite(350, this.game.config.height - 50, 'buttons', 'redbutton').setDepth(1).setScale(0.6).setVisible(false)
+      //red_button.setSize(red_button.displayWidth,red_button.displayWidth)
+      .setInteractive().on('pointerdown', function () {
         _eventDispatcher.default.emit('new_frequency', {
           f: RED_HEX,
           name: 'red'
         });
+        _eventDispatcher.default.emit('bs_unselected', 'bs_1');
       });
-      this.green_button = this.add.sprite(400, this.game.config.height - 50, 'greenbutton').setInteractive().setDepth(1).setVisible(false).on('pointerdown', function () {
-        _eventDispatcher.default.emit('new_frequency', {
-          f: GREEN_HEX,
-          name: 'green'
-        });
-      });
-      this.blue_button = this.add.sprite(500, this.game.config.height - 50, 'bluebutton').setInteractive().setDepth(1).setVisible(false).on('pointerdown', function () {
+      var blue_button = this.add.sprite(450, this.game.config.height - 50, 'buttons', 'bluebutton').setScale(0.6)
+      //blue_button.setSize(blue_button.displayWidth,blue_button.displayHeight)
+      .setDepth(1).setInteractive().setVisible(false).on('pointerdown', function () {
         _eventDispatcher.default.emit('new_frequency', {
           f: BLUE_HEX,
           name: 'blue'
         });
+        _eventDispatcher.default.emit('bs_unselected', 'bs_1');
       });
+      frequency_buttons.addMultiple([red_button, blue_button]);
       this.progressCount = 0;
       this.usersFinished = 0;
       this.notFirst = true;
@@ -2101,7 +2376,7 @@ var Tutorial = /*#__PURE__*/function (_Phaser$Scene) {
               targets: _this.mainTower,
               y: '+=30',
               // '+=100'
-              x: '-=300',
+              x: '-=250',
               scale: 1,
               ease: 'Linear',
               // 'Cubic', 'Elastic', 'Bounce', 'Back'
@@ -2193,9 +2468,7 @@ var Tutorial = /*#__PURE__*/function (_Phaser$Scene) {
           case 11:
             //Base Station UI Control
             _this.txtScene.handleTextBoxUpdate(10);
-            _this.red_button.setVisible(true);
-            _this.green_button.setVisible(true);
-            _this.blue_button.setVisible(true);
+            frequency_buttons.setVisible(true);
             break;
           case 12:
             _this.txtScene.handleTextBoxUpdate(11);
@@ -2218,6 +2491,11 @@ var Tutorial = /*#__PURE__*/function (_Phaser$Scene) {
             break;
         }
       });
+      this.events.once('shutdown', function () {
+        this.allDevices.destroy();
+        this.mainTower.destroy();
+        _eventDispatcher.default.removeAllListeners();
+      }, this);
       this.scene.run('textBoxScene');
     }
   }, {
@@ -2320,15 +2598,15 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
 var COLOR_PRIMARY = 0x77b5d9;
 var COLOR_LIGHT = 0xd7eaf3;
 var COLOR_DARK = 0x14397d;
-var text_0 = "Hello! Welcome to the Tutorial of Mini Networks! This is a game about managing the many devices that rely on the wireless communications network we take for granted everyday.";
+var text_0 = "Hello! Welcome to the Tutorial of Mini Networks! This is a game about managing the many devices that rely on the wireless communications network we take for granted.";
 var text_1 = 'This is a Base Station! It acts as a central coordination point for wireless devices to connect to.';
 var text_2 = 'This is a mobile phone, and is one of the many devices that require an internet connection.';
-var text_3 = 'In Mini Networks, your job is to act as coordinator for all these wireless devices. In this example, try left clicking on the Base Station and then again on the phone to connect the phone to the network.';
+var text_3 = 'In Mini Networks, your job is to act as coordinator for all these wireless devices. In this example, try left clicking on the Base Station and then again on the phone to connect.';
 var text_4 = 'Brilliant! The mobile phone will now be serviced, and the progress can be seen as a percentage. Each envelope is a visual representation of a data packet being sent from the Base Station to the User Equipment (A common term for devices).';
 var text_5 = 'Nice! That is one happy phone user. That user was quite close to the base station, let us see what happens when they are much further away.';
 var text_6 = 'As you can see, it takes a lot longer to service a user far away from the base station. This is due to the signal waveforms detoriating the further they must travel (In maths, this is usually expressed as the inverse square law).';
 var text_7 = 'One method to further the distance our signals travel is a relay node. Typically, signals will move through paths of relays to reach their destination.';
-var text_8 = 'This time, use the relay to speed up the transmission time and further the range. You can drag the relay node to set it up where you would like, and you can unbind a relay node from a base station by clicking on the base station then re-clicking the relay.';
+var text_8 = 'This time, use the relay to speed up the transmission time and further the range. You can drag the relay node to set it up where you would like, and you can unbind a relay node from a base station by right clicking on the relay.';
 var text_9 = 'Good job! If you have ever owned a Wi-Fi booster, hopefully you see some similarities here. Unfortunately for you, there will be more than one device to handle...';
 var text_10 = 'A popular technique to send data to different users is to seperate their signals in the frequency domain, this means you can send out as many signals as you have frequency bands, for which you have 3 frequencies (colours) to choose from';
 var text_11 = 'Try supporting both phones at the same time, using two different frequency bands (This technique is called Frequency Domain Multiple Access).';
@@ -2567,6 +2845,7 @@ var Boot = /*#__PURE__*/function (_Phaser$Scene) {
     key: "create",
     value: function create(data) {
       // Start the preloader
+      this.input.mouse.disableContextMenu();
       this.add.image(400, 300, 'logo');
       this.scene.launch('preloaderScene');
     }
@@ -2598,7 +2877,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "62716" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "65237" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];
